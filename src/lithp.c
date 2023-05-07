@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -20,6 +21,48 @@ void printAST(mpc_ast_t* node) {
     _printAST(node, 0);
 }
 
+long eval_op(char* op, long x, int y) {
+    if (!strcmp(op, "+")) { return x + y; }
+    if (!strcmp(op, "-")) { return x - y; }
+    if (!strcmp(op, "*")) { return x * y; }
+    if (!strcmp(op, "/")) { return x / y; }
+    assert(0 && "unreachable code reached in eval_op()");
+}
+
+typedef enum {
+    NUM,
+    EXPR,
+    ROOT,
+} SYMBOL;
+
+SYMBOL parseTag(char* tag) {
+    if (!strcmp(tag, "expr|number|regex")) { return NUM; }
+    if (!strcmp(tag, "expr|>")) { return EXPR; }
+    if (!strcmp(tag, ">")) { return ROOT; }
+    assert(0 && "unreachable code reached in parseTag()");
+}
+
+long eval(mpc_ast_t* node) {
+    switch (parseTag(node->tag)) {
+    case NUM: return atoi(node->contents); break;
+
+    case EXPR:;
+        char* op = node->children[1]->contents;
+        long acc = eval(node->children[2]);
+
+        for (int i = 3; i < node->children_num - 1; i++) {
+            long y = eval(node->children[i]);
+            acc    = eval_op(op, acc, y);
+        }
+        return acc;
+        break;
+
+    case ROOT: return eval(node->children[1]); break;
+    default: assert(0 && "unreachable code reached in eval()"); break;
+    }
+    assert(0 && "unreachable code reached in eval()");
+}
+
 int main() {
     setup_parser();
 
@@ -31,7 +74,7 @@ int main() {
         add_history(readLine);
 
         if (mpc_parse("<stdin>", readLine, Program, &r)) {
-            printAST(r.output);
+            printf("%ld\n", eval(r.output));
             mpc_ast_delete(r.output);
         } else {
             mpc_err_print(r.error);
