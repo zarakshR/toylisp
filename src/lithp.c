@@ -26,6 +26,14 @@ long eval_op(char* op, long x, int y) {
     if (!strcmp(op, "-")) { return x - y; }
     if (!strcmp(op, "*")) { return x * y; }
     if (!strcmp(op, "/")) { return x / y; }
+    if (!strcmp(op, "^")) {
+        long acc = 1;
+        for (int i = 0; i < y; i++) { acc *= x; }
+        return acc;
+    }
+    if (!strcmp(op, "%")) { return x - y * (x / y); }
+    if (!strcmp(op, "min")) { return x < y ? x : y; }
+    if (!strcmp(op, "max")) { return x > y ? x : y; }
     assert(0 && "unreachable code reached in eval_op()");
 }
 
@@ -49,6 +57,12 @@ long eval(mpc_ast_t* node) {
     case EXPR:;
         char* op = node->children[1]->contents;
         long acc = eval(node->children[2]);
+
+        if (!strcmp(op, "-") && !(strcmp(node->children[3]->contents, ")"))) {
+            return eval(node->children[2]) * -1;
+        }
+
+        long x = eval(node->children[2]);
 
         for (int i = 3; i < node->children_num - 1; i++) {
             long y = eval(node->children[i]);
