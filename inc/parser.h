@@ -6,7 +6,7 @@
 extern mpc_parser_t* Number;
 extern mpc_parser_t* Operator;
 extern mpc_parser_t* Expr;
-extern mpc_parser_t* Lispy;
+extern mpc_parser_t* Program;
 
 void cleanup_parser(void);
 void setup_parser(void);

@@ -3,14 +3,14 @@
 mpc_parser_t* Number;
 mpc_parser_t* Operator;
 mpc_parser_t* Expr;
-mpc_parser_t* Lispy;
+mpc_parser_t* Program;
 
 void setup_parser(void) {
     // Initialize Parsers
     Number   = mpc_new("number");
     Operator = mpc_new("operator");
     Expr     = mpc_new("expr");
-    Lispy    = mpc_new("lispy");
+    Program  = mpc_new("program");
 
     /* Define them with the following Language */
     mpca_lang(MPCA_LANG_DEFAULT,
@@ -18,12 +18,12 @@ void setup_parser(void) {
         number   : /-?[0-9]+/ ;                             \
         operator : '+' | '-' | '*' | '/' ;                  \
         expr     : <number> | '(' <operator> <expr>+ ')' ;  \
-        lispy    : /^/ <operator> <expr>+ /$/ ;             \
+        program    : /^/ <expr>+ /$/ ;             \
       ",
-              Number, Operator, Expr, Lispy);
+              Number, Operator, Expr, Program);
 }
 
 void cleanup_parser(void) {
     /* Undefine and Delete our Parsers */
-    mpc_cleanup(4, Number, Operator, Expr, Lispy);
+    mpc_cleanup(4, Number, Operator, Expr, Program);
 }
