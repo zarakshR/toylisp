@@ -16,12 +16,12 @@ LDFLAGS=
 DBGFLAGS=-g3
 SANFLAGS=-fsanitize=address,undefined,integer-divide-by-zero -fno-omit-frame-pointer # Flags for ASan builds
 
-LDLIBS=-lreadline
+LDLIBS=-lreadline -lm
 
 # Header files
 HEADERS=
 # Compilation units
-UNITS=lithp
+UNITS=lithp mpc
 
 # Generate lists of headers, sources, objects, and object-with-debugging-symbols
 HDRS=$(patsubst %, $(OBJECT_DIR)/%.h.gch, $(HEADERS))
