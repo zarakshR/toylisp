@@ -21,7 +21,7 @@ void printAST(mpc_ast_t* node) {
     _printAST(node, 0);
 }
 
-long eval_op(char* op, long x, int y) {
+long evalOp(char* op, long x, int y) {
     if (!strcmp(op, "+")) { return x + y; }
     if (!strcmp(op, "-")) { return x - y; }
     if (!strcmp(op, "*")) { return x * y; }
@@ -34,7 +34,7 @@ long eval_op(char* op, long x, int y) {
     if (!strcmp(op, "%")) { return x - y * (x / y); }
     if (!strcmp(op, "min")) { return x < y ? x : y; }
     if (!strcmp(op, "max")) { return x > y ? x : y; }
-    assert(0 && "unreachable code reached in eval_op()");
+    assert(0 && "unreachable code reached in evalOp()");
 }
 
 typedef enum {
@@ -56,7 +56,6 @@ long eval(mpc_ast_t* node) {
 
     case EXPR:;
         char* op = node->children[1]->contents;
-        long acc = eval(node->children[2]);
 
         if (!strcmp(op, "-") && !(strcmp(node->children[3]->contents, ")"))) {
             return eval(node->children[2]) * -1;
@@ -66,9 +65,9 @@ long eval(mpc_ast_t* node) {
 
         for (int i = 3; i < node->children_num - 1; i++) {
             long y = eval(node->children[i]);
-            acc    = eval_op(op, acc, y);
+            x      = evalOp(op, x, y);
         }
-        return acc;
+        return x;
         break;
 
     case ROOT: return eval(node->children[1]); break;
