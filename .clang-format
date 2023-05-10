@@ -4,13 +4,14 @@ AlignAfterOpenBracket: Align
 AlignConsecutiveMacros: 'true'
 AlignConsecutiveAssignments: 'true'
 AlignConsecutiveDeclarations: 'false'
-AlignEscapedNewlines: Left
+AlignEscapedNewlines: Right
 AlignTrailingComments: 'true'
 AllowShortBlocksOnASingleLine: 'true'
 AllowShortCaseLabelsOnASingleLine: 'true'
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: 'true'
 AllowShortLoopsOnASingleLine: 'true'
+IndentCaseLabels: 'true'
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom
 BraceWrapping: {
