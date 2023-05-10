@@ -19,7 +19,7 @@ SANFLAGS=-fsanitize=address,undefined,integer-divide-by-zero -fno-omit-frame-poi
 LDLIBS=-lreadline -lm
 
 # Header files
-HEADERS=parser mpc
+HEADERS=lithp parser mpc
 # Compilation units
 UNITS=lithp parser mpc
 
