@@ -32,7 +32,7 @@ const char* reprError(ERR_CODE err) {
     switch (err) {
         case DIV_ZERO: return "Division by zero";
         case ARG_COUNT: return "Wrong number of arguments";
-        case INT_OVERFLOW: return "Integer overflow";
+        case INT_FLOW: return "Integer over/underflow";
         default: return "Unknown error";
     }
 }
@@ -70,19 +70,19 @@ Result evalOp(char* op, long x, long y) {
         long res;
         case ADD:;
             if (__builtin_saddl_overflow(x, y, &res)) {
-                return errResult(INT_OVERFLOW);
+                return errResult(INT_FLOW);
             } else {
                 return valResult(res);
             }
         case SUB:
             if (__builtin_ssubl_overflow(x, y, &res)) {
-                return errResult(INT_OVERFLOW);
+                return errResult(INT_FLOW);
             } else {
                 return valResult(res);
             }
         case MUL:
             if (__builtin_smull_overflow(x, y, &res)) {
-                return errResult(INT_OVERFLOW);
+                return errResult(INT_FLOW);
             } else {
                 return valResult(res);
             }
@@ -91,7 +91,7 @@ Result evalOp(char* op, long x, long y) {
             long acc = 1;
             for (int i = 0; i < y; i++) {
                 if (__builtin_smull_overflow(acc, x, &acc)) {
-                    return errResult(INT_OVERFLOW);
+                    return errResult(INT_FLOW);
                 }
             }
             return valResult(acc);
@@ -115,7 +115,7 @@ Result eval(mpc_ast_t* node) {
         case NUM:;
             char* endptr;
             long val = strtol(node->contents, &endptr, 0);
-            if (errno is ERANGE) { return errResult(INT_OVERFLOW); }
+            if (errno is ERANGE) { return errResult(INT_FLOW); }
             // We shouldn't need to check for other failures since the language
             // grammar ensures valid numbers only.
             return valResult(val);
