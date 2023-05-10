@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#include <utils.h>
+
 #include <readline/history.h>
 #include <readline/readline.h>
 
@@ -22,18 +24,18 @@ void printAST(mpc_ast_t* node) {
 }
 
 long evalOp(char* op, long x, int y) {
-    if (!strcmp(op, "+")) { return x + y; }
-    if (!strcmp(op, "-")) { return x - y; }
-    if (!strcmp(op, "*")) { return x * y; }
-    if (!strcmp(op, "/")) { return x / y; }
-    if (!strcmp(op, "^")) {
+    if (not strcmp(op, "+")) { return x + y; }
+    if (not strcmp(op, "-")) { return x - y; }
+    if (not strcmp(op, "*")) { return x * y; }
+    if (not strcmp(op, "/")) { return x / y; }
+    if (not strcmp(op, "^")) {
         long acc = 1;
         for (int i = 0; i < y; i++) { acc *= x; }
         return acc;
     }
-    if (!strcmp(op, "%")) { return x - y * (x / y); }
-    if (!strcmp(op, "min")) { return x < y ? x : y; }
-    if (!strcmp(op, "max")) { return x > y ? x : y; }
+    if (not strcmp(op, "%")) { return x - y * (x / y); }
+    if (not strcmp(op, "min")) { return x < y ? x : y; }
+    if (not strcmp(op, "max")) { return x > y ? x : y; }
     assert(0 && "unreachable code reached in evalOp()");
 }
 
@@ -44,9 +46,9 @@ typedef enum {
 } SYMBOL;
 
 SYMBOL parseTag(char* tag) {
-    if (!strcmp(tag, "expr|number|regex")) { return NUM; }
-    if (!strcmp(tag, "expr|>")) { return EXPR; }
-    if (!strcmp(tag, ">")) { return ROOT; }
+    if (not strcmp(tag, "expr|number|regex")) { return NUM; }
+    if (not strcmp(tag, "expr|>")) { return EXPR; }
+    if (not strcmp(tag, ">")) { return ROOT; }
     assert(0 && "unreachable code reached in parseTag()");
 }
 
@@ -57,7 +59,8 @@ long eval(mpc_ast_t* node) {
     case EXPR:;
         char* op = node->children[1]->contents;
 
-        if (!strcmp(op, "-") && !(strcmp(node->children[3]->contents, ")"))) {
+        if (not strcmp(op, "-")
+            and not(strcmp(node->children[3]->contents, ")"))) {
             return eval(node->children[2]) * -1;
         }
 
@@ -79,11 +82,11 @@ long eval(mpc_ast_t* node) {
 int main() {
     setup_parser();
 
-    while (1) {
+    loop {
         mpc_result_t r;
 
         char* readLine = readline("> ");
-        if (!readLine) { break; }
+        if (readLine is NULL) { break; }
         add_history(readLine);
 
         if (mpc_parse("<stdin>", readLine, Program, &r)) {
