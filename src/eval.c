@@ -36,7 +36,8 @@ Result evalOp(char* op, long x, long y) {
             } else {
                 return valResult(res);
             }
-        case DIV: return y == 0 ? errResult(DIV_ZERO) : valResult(x / y);
+        case DIV:
+            return y == 0 ? errResult(DIV_ZERO) : dubResult(x / (double)y);
         case POW:;
             long acc = 1;
             for (int i = 0; i < y; i++) {
