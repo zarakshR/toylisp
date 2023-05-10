@@ -28,8 +28,8 @@ void printAST(mpc_ast_t* node) {
     _printAST(node, 0);
 }
 
-char* reprError(ERR_CODE e) {
-    switch (e) {
+const char* reprError(ERR_CODE err) {
+    switch (err) {
         case DIV_ZERO: return "Division by zero";
         case ARG_COUNT: return "Wrong number of arguments";
         case INT_OVERFLOW: return "Integer overflow";
@@ -37,12 +37,20 @@ char* reprError(ERR_CODE e) {
     }
 }
 
+void printResult(Result r) {
+    switch (r.type) {
+        case VALUE: printf("%ld\n", r.result.value); break;
+        case ERROR: printf("%s\n", reprError(r.result.error)); break;
+        default: assert(0 && "unreachable code reached in printResult()");
+    }
+}
+
 Result valResult(long x) {
     return (Result){VALUE, {x}};
 }
 
-Result errResult(ERR_CODE e) {
-    return (Result){ERROR, {e}};
+Result errResult(ERR_CODE err) {
+    return (Result){ERROR, {err}};
 }
 
 OP parseOP(char* op) {
@@ -91,7 +99,7 @@ Result evalOp(char* op, long x, long y) {
             return y == 0 ? errResult(DIV_ZERO) : valResult(x - y * (x / y));
         case MIN: return valResult(x < y ? x : y);
         case MAX: return valResult(x > y ? x : y);
-        default: assert(0 && "unreachable code reached in evalOp()"); break;
+        default: assert(0 && "unreachable code reached in evalOp()");
     }
 }
 
@@ -147,13 +155,7 @@ int main() {
 
         if (mpc_parse("<stdin>", readLine, Program, &r)) {
             Result eval_result = eval(r.output);
-            switch (eval_result.type) {
-                case VALUE: printf("%ld\n", eval_result.result.value); break;
-                case ERROR:
-                    printf("Error: %s\n", reprError(eval_result.result.error));
-                    break;
-                default: break;
-            }
+            printResult(eval_result);
             mpc_ast_delete(r.output);
         } else {
             mpc_err_print(r.error);
