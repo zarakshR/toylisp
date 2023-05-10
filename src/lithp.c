@@ -39,8 +39,8 @@ const char* reprError(ERR_CODE err) {
 
 void printResult(Result r) {
     switch (r.type) {
-        case VALUE: printf("%ld\n", r.result.value); break;
-        case ERROR: printf("%s\n", reprError(r.result.error)); break;
+        case VALUE: printf("%ld\n", r.result.lvalue); break;
+        case ERROR: printf("%s\n", reprError(r.result.evalue)); break;
         default: assert(0 && "unreachable code reached in printResult()");
     }
 }
@@ -134,7 +134,8 @@ Result eval(mpc_ast_t* node) {
             Result res2 = eval(node->children[3]);
             if (res2.type is ERROR) { return res2; }
 
-            return evalOp(op, (long)res1.result.value, (long)res2.result.value);
+            return evalOp(op, (long)res1.result.lvalue,
+                          (long)res2.result.lvalue);
 
         case ROOT: return eval(node->children[1]);
         default: assert(0 && "unreachable code reached in eval()");

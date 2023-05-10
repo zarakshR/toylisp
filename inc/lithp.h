@@ -4,8 +4,8 @@ typedef enum { DIV_ZERO, ARG_COUNT, INT_FLOW } ERR_CODE;
 typedef struct {
     RES_TYPE type;
     union {
-        long value;
-        ERR_CODE error;
+        long lvalue;
+        ERR_CODE evalue;
     } result;
 } Result;
 
