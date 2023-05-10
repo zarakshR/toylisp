@@ -26,6 +26,7 @@ void printAST(mpc_ast_t* node) {
 
 char* reprError(ERR_CODE e) {
     switch (e) {
+        case DIV_ZERO: return "Division by zero";
         default: return "Unknown error";
     }
 }
@@ -55,13 +56,13 @@ Result evalOp(char* op, long x, long y) {
         case ADD: return valResult(x + y);
         case SUB: return valResult(x - y);
         case MUL: return valResult(x * y);
-        case DIV: return valResult(x / y);
+        case DIV: return y == 0 ? errResult(DIV_ZERO) : valResult(x / y);
         case POW:;
             long acc = 1;
             for (int i = 0; i < y; i++) { acc *= x; }
             return valResult(acc);
         case MOD:;
-            return valResult(x - y * (x / y));
+            return y == 0 ? errResult(DIV_ZERO) : valResult(x - y * (x / y));
         case MIN: return valResult(x < y ? x : y);
         case MAX: return valResult(x > y ? x : y);
         default: assert(0 && "unreachable code reached in evalOp()"); break;
@@ -83,9 +84,12 @@ Result eval(mpc_ast_t* node) {
             char* op = node->children[1]->contents;
 
             Result res1 = eval(node->children[2]);
-            Result res2 = eval(node->children[3]);
-            return evalOp(op, (long)res1.result.value, (long)res2.result.value);
+            if (res1.type is ERROR) { return res1; }
 
+            Result res2 = eval(node->children[3]);
+            if (res2.type is ERROR) { return res2; }
+
+            return evalOp(op, (long)res1.result.value, (long)res2.result.value);
 
         case ROOT: return eval(node->children[1]);
         default: assert(0 && "unreachable code reached in eval()");
@@ -105,7 +109,13 @@ int main() {
 
         if (mpc_parse("<stdin>", readLine, Program, &r)) {
             Result eval_result = eval(r.output);
-            printf("%ld\n", eval_result.result.value);
+            switch (eval_result.type) {
+                case VALUE: printf("%ld\n", eval_result.result.value); break;
+                case ERROR:
+                    printf("Error: %s\n", reprError(eval_result.result.error));
+                    break;
+                default: break;
+            }
             mpc_ast_delete(r.output);
         } else {
             mpc_err_print(r.error);
