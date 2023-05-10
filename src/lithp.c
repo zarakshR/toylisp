@@ -95,8 +95,7 @@ Result evalOp(char* op, long x, long y) {
                 }
             }
             return valResult(acc);
-        case MOD:;
-            return y == 0 ? errResult(DIV_ZERO) : valResult(x - y * (x / y));
+        case MOD: return y == 0 ? errResult(DIV_ZERO) : valResult(x % y);
         case MIN: return valResult(x < y ? x : y);
         case MAX: return valResult(x > y ? x : y);
         default: assert(0 && "unreachable code reached in evalOp()");
