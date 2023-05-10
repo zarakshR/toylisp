@@ -1,3 +1,7 @@
+#ifndef __GNUC__
+#error "GCC required"
+#endif
+
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,13 +59,33 @@ OP parseOP(char* op) {
 
 Result evalOp(char* op, long x, long y) {
     switch (parseOP(op)) {
-        case ADD: return valResult(x + y);
-        case SUB: return valResult(x - y);
-        case MUL: return valResult(x * y);
+        long res;
+        case ADD:;
+            if (__builtin_saddl_overflow(x, y, &res)) {
+                return errResult(INT_OVERFLOW);
+            } else {
+                return valResult(res);
+            }
+        case SUB:
+            if (__builtin_ssubl_overflow(x, y, &res)) {
+                return errResult(INT_OVERFLOW);
+            } else {
+                return valResult(res);
+            }
+        case MUL:
+            if (__builtin_smull_overflow(x, y, &res)) {
+                return errResult(INT_OVERFLOW);
+            } else {
+                return valResult(res);
+            }
         case DIV: return y == 0 ? errResult(DIV_ZERO) : valResult(x / y);
         case POW:;
             long acc = 1;
-            for (int i = 0; i < y; i++) { acc *= x; }
+            for (int i = 0; i < y; i++) {
+                if (__builtin_smull_overflow(acc, x, &acc)) {
+                    return errResult(INT_OVERFLOW);
+                }
+            }
             return valResult(acc);
         case MOD:;
             return y == 0 ? errResult(DIV_ZERO) : valResult(x - y * (x / y));
