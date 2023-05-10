@@ -32,3 +32,23 @@ void cleanup_parser(void) {
     /* Undefine and Delete our Parsers */
     mpc_cleanup(4, Integer, Decimal, Number, Operator, Expr, Program);
 }
+
+OP parseOP(char* op) {
+    if (not strcmp(op, "+")) { return ADD; }
+    if (not strcmp(op, "-")) { return SUB; }
+    if (not strcmp(op, "*")) { return MUL; }
+    if (not strcmp(op, "/")) { return DIV; }
+    if (not strcmp(op, "^")) { return POW; }
+    if (not strcmp(op, "%")) { return MOD; }
+    if (not strcmp(op, "min")) { return MIN; }
+    if (not strcmp(op, "max")) { return MAX; }
+    assert(0 && "unreachable code reached in parseOp()");
+}
+
+SYMBOL parseTag(char* tag) {
+    if (not strcmp(tag, "expr|number|integer|regex")) { return NUM; }
+    if (not strcmp(tag, "expr|number|decimal|regex")) { return DEC; }
+    if (not strcmp(tag, "expr|>")) { return EXPR; }
+    if (not strcmp(tag, ">")) { return ROOT; }
+    assert(0 && "unreachable code reached in parseTag()");
+}

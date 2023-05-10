@@ -1,15 +1,19 @@
-typedef enum { VALUE, ERROR } RES_TYPE;
-typedef enum { DIV_ZERO, ARG_COUNT, INT_FLOW } ERR_CODE;
+#ifndef LITHP__LITHP_H
+#define LITHP__LITHP_H
 
-typedef struct {
-    RES_TYPE type;
-    union {
-        long lvalue;
-        long double dvalue;
-        ERR_CODE evalue;
-    } result;
-} Result;
+#ifndef __GNUC__
+#error "GCC required"
+#endif
 
-typedef enum { NUM, EXPR, ROOT } SYMBOL;
+#include <stdio.h>
+#include <assert.h>
 
-typedef enum { ADD, SUB, MUL, DIV, POW, MOD, MIN, MAX } OP;
+#include <utils.h>
+
+#include <readline/history.h>
+#include <readline/readline.h>
+
+#include "eval.h"
+#include "parser.h"
+
+#endif
