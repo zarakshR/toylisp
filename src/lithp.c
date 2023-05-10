@@ -24,6 +24,20 @@ void printAST(mpc_ast_t* node) {
     _printAST(node, 0);
 }
 
+char* reprError(ERR_CODE e) {
+    switch (e) {
+        default: return "Unknown error";
+    }
+}
+
+Result valResult(long x) {
+    return (Result){VALUE, {x}};
+}
+
+Result errResult(ERR_CODE e) {
+    return (Result){ERROR, {e}};
+}
+
 OP parseOP(char* op) {
     if (not strcmp(op, "+")) { return ADD; }
     if (not strcmp(op, "-")) { return SUB; }
@@ -36,20 +50,20 @@ OP parseOP(char* op) {
     assert(0 && "unreachable code reached in parseOp()");
 }
 
-long evalOp(char* op, long x, int y) {
+Result evalOp(char* op, long x, long y) {
     switch (parseOP(op)) {
-        case ADD: return x + y; break;
-        case SUB: return x - y; break;
-        case MUL: return x * y; break;
-        case DIV: return x / y; break;
+        case ADD: return valResult(x + y);
+        case SUB: return valResult(x - y);
+        case MUL: return valResult(x * y);
+        case DIV: return valResult(x / y);
         case POW:;
             long acc = 1;
             for (int i = 0; i < y; i++) { acc *= x; }
-            return acc;
-            break;
-        case MOD: return x - y * (x / y); break;
-        case MIN: return x < y ? x : y; break;
-        case MAX: return x > y ? x : y; break;
+            return valResult(acc);
+        case MOD:;
+            return valResult(x - y * (x / y));
+        case MIN: return valResult(x < y ? x : y);
+        case MAX: return valResult(x > y ? x : y);
         default: assert(0 && "unreachable code reached in evalOp()"); break;
     }
 }
@@ -61,21 +75,20 @@ SYMBOL parseTag(char* tag) {
     assert(0 && "unreachable code reached in parseTag()");
 }
 
-long eval(mpc_ast_t* node) {
+Result eval(mpc_ast_t* node) {
     switch (parseTag(node->tag)) {
-        case NUM: return atoi(node->contents); break;
+        case NUM: return valResult(atoi(node->contents));
 
         case EXPR:;
             char* op = node->children[1]->contents;
 
-            long arg1 = eval(node->children[2]);
-            long arg2 = eval(node->children[3]);
-            return evalOp(op, arg1, arg2);
+            Result res1 = eval(node->children[2]);
+            Result res2 = eval(node->children[3]);
+            return evalOp(op, (long)res1.result.value, (long)res2.result.value);
 
-            break;
 
-        case ROOT: return eval(node->children[1]); break;
-        default: assert(0 && "unreachable code reached in eval()"); break;
+        case ROOT: return eval(node->children[1]);
+        default: assert(0 && "unreachable code reached in eval()");
     }
     assert(0 && "unreachable code reached in eval()");
 }
@@ -91,7 +104,8 @@ int main() {
         add_history(readLine);
 
         if (mpc_parse("<stdin>", readLine, Program, &r)) {
-            printf("%ld\n", eval(r.output));
+            Result eval_result = eval(r.output);
+            printf("%ld\n", eval_result.result.value);
             mpc_ast_delete(r.output);
         } else {
             mpc_err_print(r.error);
