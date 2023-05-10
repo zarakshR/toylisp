@@ -63,27 +63,19 @@ SYMBOL parseTag(char* tag) {
 
 long eval(mpc_ast_t* node) {
     switch (parseTag(node->tag)) {
-    case NUM: return atoi(node->contents); break;
+        case NUM: return atoi(node->contents); break;
 
-    case EXPR:;
-        char* op = node->children[1]->contents;
+        case EXPR:;
+            char* op = node->children[1]->contents;
 
-        if (not strcmp(op, "-")
-            and not(strcmp(node->children[3]->contents, ")"))) {
-            return eval(node->children[2]) * -1;
-        }
+            long arg1 = eval(node->children[2]);
+            long arg2 = eval(node->children[3]);
+            return evalOp(op, arg1, arg2);
 
-        long x = eval(node->children[2]);
+            break;
 
-        for (int i = 3; i < node->children_num - 1; i++) {
-            long y = eval(node->children[i]);
-            x      = evalOp(op, x, y);
-        }
-        return x;
-        break;
-
-    case ROOT: return eval(node->children[1]); break;
-    default: assert(0 && "unreachable code reached in eval()"); break;
+        case ROOT: return eval(node->children[1]); break;
+        default: assert(0 && "unreachable code reached in eval()"); break;
     }
     assert(0 && "unreachable code reached in eval()");
 }
