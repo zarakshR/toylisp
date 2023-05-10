@@ -7,6 +7,7 @@
 #include <readline/history.h>
 #include <readline/readline.h>
 
+#include "lithp.h"
 #include "mpc.h"
 #include "parser.h"
 
@@ -23,27 +24,35 @@ void printAST(mpc_ast_t* node) {
     _printAST(node, 0);
 }
 
-long evalOp(char* op, long x, int y) {
-    if (not strcmp(op, "+")) { return x + y; }
-    if (not strcmp(op, "-")) { return x - y; }
-    if (not strcmp(op, "*")) { return x * y; }
-    if (not strcmp(op, "/")) { return x / y; }
-    if (not strcmp(op, "^")) {
-        long acc = 1;
-        for (int i = 0; i < y; i++) { acc *= x; }
-        return acc;
-    }
-    if (not strcmp(op, "%")) { return x - y * (x / y); }
-    if (not strcmp(op, "min")) { return x < y ? x : y; }
-    if (not strcmp(op, "max")) { return x > y ? x : y; }
-    assert(0 && "unreachable code reached in evalOp()");
+OP parseOP(char* op) {
+    if (not strcmp(op, "+")) { return ADD; }
+    if (not strcmp(op, "-")) { return SUB; }
+    if (not strcmp(op, "*")) { return MUL; }
+    if (not strcmp(op, "/")) { return DIV; }
+    if (not strcmp(op, "^")) { return POW; }
+    if (not strcmp(op, "%")) { return MOD; }
+    if (not strcmp(op, "min")) { return MIN; }
+    if (not strcmp(op, "max")) { return MAX; }
+    assert(0 && "unreachable code reached in parseOp()");
 }
 
-typedef enum {
-    NUM,
-    EXPR,
-    ROOT,
-} SYMBOL;
+long evalOp(char* op, long x, int y) {
+    switch (parseOP(op)) {
+        case ADD: return x + y; break;
+        case SUB: return x - y; break;
+        case MUL: return x * y; break;
+        case DIV: return x / y; break;
+        case POW:;
+            long acc = 1;
+            for (int i = 0; i < y; i++) { acc *= x; }
+            return acc;
+            break;
+        case MOD: return x - y * (x / y); break;
+        case MIN: return x < y ? x : y; break;
+        case MAX: return x > y ? x : y; break;
+        default: assert(0 && "unreachable code reached in evalOp()"); break;
+    }
+}
 
 SYMBOL parseTag(char* tag) {
     if (not strcmp(tag, "expr|number|regex")) { return NUM; }
