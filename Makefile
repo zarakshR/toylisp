@@ -11,7 +11,7 @@ BUILD_DIR=build
 SOURCE_DIR=src
 
 CC=gcc
-CFLAGS=-Wall -Wextra -Wpedantic -O3 -D_FORTIFY_SOURCE=2 -I$(INCLUDE_DIR) -I$(OBJECT_DIR) # OBJECT_DIR contains the precompiled headers
+CFLAGS=-Wall -Wextra -Wpedantic -Werror -O3 -D_FORTIFY_SOURCE=2 -I$(INCLUDE_DIR) -I$(OBJECT_DIR) # OBJECT_DIR contains the precompiled headers
 LDFLAGS=
 DBGFLAGS=-g3
 SANFLAGS=-fsanitize=address,undefined,integer-divide-by-zero -fno-omit-frame-pointer # Flags for ASan builds
