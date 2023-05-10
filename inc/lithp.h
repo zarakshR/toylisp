@@ -1,5 +1,5 @@
 typedef enum { VALUE, ERROR } RES_TYPE;
-typedef enum { DIV_ZERO, ARG_COUNT } ERR_CODE;
+typedef enum { DIV_ZERO, ARG_COUNT, INT_OVERFLOW } ERR_CODE;
 
 typedef struct {
     RES_TYPE type;

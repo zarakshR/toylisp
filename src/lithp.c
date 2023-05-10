@@ -28,6 +28,7 @@ char* reprError(ERR_CODE e) {
     switch (e) {
         case DIV_ZERO: return "Division by zero";
         case ARG_COUNT: return "Wrong number of arguments";
+        case INT_OVERFLOW: return "Integer overflow";
         default: return "Unknown error";
     }
 }
@@ -79,7 +80,13 @@ SYMBOL parseTag(char* tag) {
 
 Result eval(mpc_ast_t* node) {
     switch (parseTag(node->tag)) {
-        case NUM: return valResult(atoi(node->contents));
+        case NUM:;
+            char* endptr;
+            long val = strtol(node->contents, &endptr, 0);
+            if (errno is ERANGE) { return errResult(INT_OVERFLOW); }
+            // We shouldn't need to check for other failures since the language
+            // grammar ensures valid numbers only.
+            return valResult(val);
 
         case EXPR:;
 
