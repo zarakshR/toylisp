@@ -27,6 +27,7 @@ void printAST(mpc_ast_t* node) {
 char* reprError(ERR_CODE e) {
     switch (e) {
         case DIV_ZERO: return "Division by zero";
+        case ARG_COUNT: return "Wrong number of arguments";
         default: return "Unknown error";
     }
 }
@@ -81,6 +82,12 @@ Result eval(mpc_ast_t* node) {
         case NUM: return valResult(atoi(node->contents));
 
         case EXPR:;
+
+            if (strcmp(node->children[2]->contents, ")") is 0
+                or strcmp(node->children[3]->contents, ")") is 0) {
+                return errResult(ARG_COUNT);
+            }
+
             char* op = node->children[1]->contents;
 
             Result res1 = eval(node->children[2]);
