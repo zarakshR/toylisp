@@ -5,6 +5,7 @@ typedef struct {
     RES_TYPE type;
     union {
         long lvalue;
+        long double dvalue;
         ERR_CODE evalue;
     } result;
 } Result;

@@ -39,18 +39,26 @@ const char* reprError(ERR_CODE err) {
 
 void printResult(Result r) {
     switch (r.type) {
-        case VALUE: printf("%ld\n", r.result.lvalue); break;
+        case INT_VALUE: printf("%ld\n", r.result.ivalue); break;
+        case DEC_VALUE: printf("%Lf\n", r.result.dvalue); break;
         case ERROR: printf("%s\n", reprError(r.result.evalue)); break;
         default: assert(0 && "unreachable code reached in printResult()");
     }
 }
 
 Result valResult(long x) {
-    return (Result){VALUE, {x}};
+    Result res = {.type = INT_VALUE, .result.ivalue = x};
+    return res;
+}
+
+Result dubResult(long double x) {
+    Result res = {.type = DEC_VALUE, .result.dvalue = x};
+    return res;
 }
 
 Result errResult(ERR_CODE err) {
-    return (Result){ERROR, {err}};
+    Result res = {.type = ERROR, .result.evalue = err};
+    return res;
 }
 
 OP parseOP(char* op) {
@@ -103,7 +111,8 @@ Result evalOp(char* op, long x, long y) {
 }
 
 SYMBOL parseTag(char* tag) {
-    if (not strcmp(tag, "expr|number|regex")) { return NUM; }
+    if (not strcmp(tag, "expr|number|integer|regex")) { return NUM; }
+    if (not strcmp(tag, "expr|number|decimal|regex")) { return DEC; }
     if (not strcmp(tag, "expr|>")) { return EXPR; }
     if (not strcmp(tag, ">")) { return ROOT; }
     assert(0 && "unreachable code reached in parseTag()");
@@ -118,6 +127,14 @@ Result eval(mpc_ast_t* node) {
             // We shouldn't need to check for other failures since the language
             // grammar ensures valid numbers only.
             return valResult(val);
+
+        case DEC: {
+            long double val = strtold(node->contents, NULL);
+            if (errno is ERANGE) { return errResult(INT_FLOW); }
+            // We shouldn't need to check for other failures since the language
+            // grammar ensures valid numbers only.
+            return dubResult(val);
+        }
 
         case EXPR:;
 
@@ -134,8 +151,13 @@ Result eval(mpc_ast_t* node) {
             Result res2 = eval(node->children[3]);
             if (res2.type is ERROR) { return res2; }
 
-            return evalOp(op, (long)res1.result.lvalue,
-                          (long)res2.result.lvalue);
+            // Only evaluate op if both arguments are ints
+            if (res1.type is INT_VALUE and res2.type is INT_VALUE) {
+                return evalOp(op, (long)res1.result.ivalue,
+                              (long)res2.result.ivalue);
+            }
+
+            assert(0 && "Uninmplemented handling of decimal arguments");
 
         case ROOT: return eval(node->children[1]);
         default: assert(0 && "unreachable code reached in eval()");
