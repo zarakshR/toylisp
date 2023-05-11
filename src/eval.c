@@ -161,8 +161,6 @@ Result* eval(mpc_ast_t* node) {
 
             return sexpr;
 
-        case ROOT: return eval(node->children[1]);
-
         default: assert(0 && "unreachable code reached in eval()");
     }
     assert(0 && "unreachable code reached in eval()");

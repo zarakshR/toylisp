@@ -59,6 +59,6 @@ SYMBOL parseTag(char* tag) {
     if (not strcmp(tag, "expr|sexpr|>") or not strcmp(tag, "sexpr|>")) {
         return SEXPR;
     }
-    if (not strcmp(tag, ">")) { return ROOT; }
+    if (not strcmp(tag, ">")) { return SEXPR; }
     assert(0 && "unreachable code reached in parseTag()");
 }

@@ -14,7 +14,7 @@ extern mpc_parser_t* Expr;
 extern mpc_parser_t* Sexpr;
 extern mpc_parser_t* Program;
 
-typedef enum { INT, DEC, SYM, SEXPR, ROOT } SYMBOL;
+typedef enum { INT, DEC, SYM, SEXPR } SYMBOL;
 typedef enum { ADD, SUB, MUL, DIV, POW, MOD, MIN, MAX } OP;
 
 void cleanup_parser(void);
