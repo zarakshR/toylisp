@@ -53,10 +53,18 @@ int main() {
         add_history(readLine);
 
         if (mpc_parse("<stdin>", readLine, Program, &r)) {
-            printAST(r.output);
-            Result* eval_result = eval(r.output);
-            printResult(eval_result);
-            resultFree(eval_result);
+
+            // We need to explicitly cast r.output since it is a void*
+            mpc_ast_t* parser_output = (mpc_ast_t*)r.output;
+
+            // Since the parser effectively wraps every line in an expression
+            // block, we need to loop through each child of the outermost
+            // expression and evalute each element separately.
+            for (int i = 1; i < parser_output->children_num - 1; i++) {
+                printAST(parser_output->children[i]);
+                Result* program = parseAST(parser_output->children[i]);
+                printResult(program);
+            }
             mpc_ast_delete(r.output);
         } else {
             mpc_err_print(r.error);
