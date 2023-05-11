@@ -18,7 +18,7 @@ void _printResult(Result* r) {
     switch (r->type) {
         case TYPE_INT: printf("%ld", r->result.integer); break;
         case VAL_DEC: printf("%Lf", r->result.decimal); break;
-        case VAL_SYM: printf("SYMBOL: %s", r->result.symbol); break;
+        case VAL_SYM: printf("%s", r->result.symbol); break;
         case VAL_SEXPR:
             printf("(");
             // Print only upto the *second-last* element so we can avoid adding
