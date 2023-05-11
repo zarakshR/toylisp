@@ -27,7 +27,7 @@ void setup_parser(void) {
                  | '%' | '^' | \"min\" | \"max\"; \
         expr    : <number> | <symbol> | <sexpr> ; \
         sexpr   : '(' <expr>* ')' ; \
-        program : /^/ <sexpr>* /$/ ; \
+        program : /^/ <expr>* /$/ ; \
       ",
               Integer, Decimal, Number, Symbol, Expr, Sexpr, Program);
 }
