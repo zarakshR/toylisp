@@ -1,9 +1,11 @@
 #include "eval.h"
 #include "types.h"
 
+// evalSym must free the sexpr it is passed and return an alternate Result*
 Result* evalSym(Result* sexpr) {
 
     if (not(sexpr->result.list.count is 3)) {
+        resultFree(sexpr);
         return errResult("Arity is not 2");
     }
 
@@ -12,6 +14,7 @@ Result* evalSym(Result* sexpr) {
     Result* arg2 = sexpr->result.list.cell[2];
 
     if (not(arg1->type is TYPE_INT and arg2->type is TYPE_INT)) {
+        resultFree(sexpr);
         return errResult("Symbol error");
     }
 
@@ -22,36 +25,84 @@ Result* evalSym(Result* sexpr) {
     switch (parseSym(sym->result.symbol)) {
         case ADD:;
             if (__builtin_saddl_overflow(x, y, &res)) {
+                resultFree(sexpr);
                 return errResult(INT_FLOW);
             } else {
+                resultFree(sexpr);
                 return valResult(res);
             }
         case SUB:
             if (__builtin_ssubl_overflow(x, y, &res)) {
+                resultFree(sexpr);
                 return errResult(INT_FLOW);
             } else {
+                resultFree(sexpr);
                 return valResult(res);
             }
         case MUL:
             if (__builtin_smull_overflow(x, y, &res)) {
+                resultFree(sexpr);
                 return errResult(INT_FLOW);
             } else {
+                resultFree(sexpr);
                 return valResult(res);
             }
         case DIV:
-            return y == 0 ? errResult(DIV_ZERO) : decResult(x / y);
+            if (y == 0) {
+                resultFree(sexpr);
+                return errResult(DIV_ZERO);
+            }
+            resultFree(sexpr);
+            return decResult(x / y);
         case POW:;
             long acc = 1;
             for (int i = 0; i < y; i++) {
                 if (__builtin_smull_overflow(acc, x, &acc)) {
+                    resultFree(sexpr);
                     return errResult(INT_FLOW);
                 }
             }
+            resultFree(sexpr);
             return valResult(acc);
-        case MOD: return y == 0 ? errResult(DIV_ZERO) : valResult(x % y);
-        case MIN: return valResult(x < y ? x : y);
-        case MAX: return valResult(x > y ? x : y);
-        default: return errResult("Symbol not found"); break;
+        case MOD:
+            if (y == 0) {
+                resultFree(sexpr);
+                return errResult(DIV_ZERO);
+            }
+            resultFree(sexpr);
+            return valResult(x % y);
+        case MIN: resultFree(sexpr); return valResult(x < y ? x : y);
+        case MAX: resultFree(sexpr); return valResult(x > y ? x : y);
+        default:
+            resultFree(sexpr);
+            return errResult("Symbol not found");
+            break;
+    }
+}
+
+Result* eval(Result* expr) {
+    switch (expr->type) {
+        case TYPE_INT: return expr;
+        case TYPE_DEC: return expr;
+        case TYPE_SYM: return expr;
+        case TYPE_ERR: return expr;
+        case TYPE_SEXPR:;
+
+            // Evaluate all the children.
+            for (size i = 0; i < expr->result.list.count; i++) {
+                Result* res = eval(expr->result.list.cell[i]);
+                if (res->type is TYPE_ERR) {
+                    resultFree(expr);
+                    return res;
+                }
+                expr->result.list.cell[i] = res;
+            }
+
+            // Evaluate ourselves;
+            return evalSym(expr);
+
+        case TYPE_QUOTE: return expr;
+        default: assert(0 && "unreachable code reached in eval()");
     }
 }
 

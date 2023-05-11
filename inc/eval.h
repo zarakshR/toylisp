@@ -14,6 +14,7 @@
 
 void resultFree(Result*);
 Result* evalSym(Result* sexpr);
+Result* eval(Result*);
 Result* parseAST(mpc_ast_t*);
 
 #endif

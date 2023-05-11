@@ -61,9 +61,10 @@ int main() {
             // block, we need to loop through each child of the outermost
             // expression and evalute each element separately.
             for (int i = 1; i < parser_output->children_num - 1; i++) {
-                printAST(parser_output->children[i]);
-                Result* program = parseAST(parser_output->children[i]);
-                printResult(program);
+                Result* program     = parseAST(parser_output->children[i]);
+                Result* eval_result = eval(program);
+                printResult(eval_result);
+                resultFree(eval_result);
             }
             mpc_ast_delete(r.output);
         } else {
