@@ -152,7 +152,9 @@ Result* eval(mpc_ast_t* node) {
                 sexpr->result.list.cell =
                     realloc(sexpr->result.list.cell,
                             sizeof(Result*) * sexpr->result.list.count);
-                sexpr->result.list.cell[i - 1] = eval(node->children[i]);
+                Result* eval_result = eval(node->children[i]);
+                if (eval_result->type is VAL_ERR) { return eval_result; }
+                sexpr->result.list.cell[i - 1] = eval_result;
             }
 
             if (sexpr->result.list.cell[0]->type is VAL_SYM) {
