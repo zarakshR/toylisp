@@ -1,4 +1,5 @@
 #include "lithp.h"
+#include "types.h"
 
 void _printAST(mpc_ast_t* node, int level) {
     for (int i = 0; i < level; i++) { printf("\t"); }
@@ -15,7 +16,7 @@ void printAST(mpc_ast_t* node) {
 
 void _printResult(Result* r) {
     switch (r->type) {
-        case VAL_INT: printf("%ld", r->result.integer); break;
+        case TYPE_INT: printf("%ld", r->result.integer); break;
         case VAL_DEC: printf("%Lf", r->result.decimal); break;
         case VAL_SYM: printf("SYMBOL: %s", r->result.symbol); break;
         case VAL_SEXPR:

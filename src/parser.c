@@ -50,15 +50,15 @@ OP parseSym(char* op) {
 }
 
 SYMBOL parseTag(char* tag) {
-    if (not strcmp(tag, "expr|number|integer|regex")) { return INT; }
-    if (not strcmp(tag, "expr|number|decimal|regex")) { return DEC; }
+    if (not strcmp(tag, "expr|number|integer|regex")) { return TAG_INT; }
+    if (not strcmp(tag, "expr|number|decimal|regex")) { return TAG_DEC; }
     if (not strcmp(tag, "expr|symbol|char")
         or not strcmp(tag, "expr|symbol|string")) {
-        return SYM;
+        return TAG_SYM;
     }
     if (not strcmp(tag, "expr|sexpr|>") or not strcmp(tag, "sexpr|>")) {
-        return SEXPR;
+        return TAG_SEXPR;
     }
-    if (not strcmp(tag, ">")) { return SEXPR; }
+    if (not strcmp(tag, ">")) { return TAG_SEXPR; }
     assert(0 && "unreachable code reached in parseTag()");
 }
