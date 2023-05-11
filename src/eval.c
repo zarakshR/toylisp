@@ -39,7 +39,7 @@ Result* evalSym(Result* sexpr) {
                 return valResult(res);
             }
         case DIV:
-            return y == 0 ? errResult(DIV_ZERO) : decResult(x / (double)y);
+            return y == 0 ? errResult(DIV_ZERO) : decResult(x / y);
         case POW:;
             long acc = 1;
             for (int i = 0; i < y; i++) {
