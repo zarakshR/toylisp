@@ -1,0 +1,3 @@
+Fix double-free bug when children have errors
+
+Add consts and static wherever possible
