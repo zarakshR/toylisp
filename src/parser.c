@@ -52,7 +52,6 @@ OP parseSym(char* op) {
 SYMBOL parseTag(char* tag) {
     if (not strcmp(tag, "expr|number|integer|regex")) { return INT; }
     if (not strcmp(tag, "expr|number|decimal|regex")) { return DEC; }
-    if (not strcmp(tag, "expr|>")) { return EXPR; }
     if (not strcmp(tag, "expr|symbol|char")
         or not strcmp(tag, "expr|symbol|string")) {
         return SYM;
