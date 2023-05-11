@@ -79,11 +79,26 @@ Result* parseAST(mpc_ast_t* node) {
 
             Result* sexpr = sexprResult();
 
+            // We want to loop from 1 to children_num-1 since the first and last
+            // children are going to be '(' and ')' respectively
             for (int i = 1; i < node->children_num - 1; i++) {
                 resultListAppend(sexpr, parseAST(node->children[i]));
             }
 
             return sexpr;
+
+        case TAG_QUOTE:;
+
+            // A quote has the same internal representation as a sexpr
+            Result* quote = sexprResult();
+
+            // We want to loop from 1 to children_num-1 since the first and last
+            // children are going to be '`' and '`' respectively
+            for (int i = 1; i < node->children_num - 1; i++) {
+                resultListAppend(quote, parseAST(node->children[i]));
+            }
+
+            return quote;
 
         default: assert(0 && "unreachable code reached in parseAST()");
     }

@@ -6,7 +6,7 @@
 #include <utils.h>
 
 typedef enum { TYPE_INT, VAL_DEC, VAL_SYM, VAL_SEXPR, VAL_ERR } VAL_TYPE;
-typedef enum { TAG_INT, TAG_DEC, TAG_SYM, TAG_SEXPR } SYMBOL;
+typedef enum { TAG_INT, TAG_DEC, TAG_SYM, TAG_SEXPR, TAG_QUOTE } SYMBOL;
 
 typedef struct Result {
     VAL_TYPE type;

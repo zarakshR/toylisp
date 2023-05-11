@@ -6,6 +6,7 @@ mpc_parser_t* Number;
 mpc_parser_t* Symbol;
 mpc_parser_t* Expr;
 mpc_parser_t* Sexpr;
+mpc_parser_t* Quote;
 mpc_parser_t* Program;
 
 void setup_parser(void) {
@@ -16,6 +17,7 @@ void setup_parser(void) {
     Symbol  = mpc_new("symbol");
     Expr    = mpc_new("expr");
     Sexpr   = mpc_new("sexpr");
+    Quote   = mpc_new("quote");
     Program = mpc_new("program");
 
     /* Define them with the following Language */
@@ -25,16 +27,18 @@ void setup_parser(void) {
         number  : <decimal> | <integer> ; \
         symbol  : '+' | '-' | '*' | '/' | \"_/\" \
                  | '%' | '^' | \"min\" | \"max\"; \
-        expr    : <number> | <symbol> | <sexpr> ; \
+        expr    : <number> | <symbol> | <sexpr> | <quote> ; \
+        quote   : '`' <expr>* '`' ; \
         sexpr   : '(' <expr>* ')' ; \
         program : /^/ <expr>* /$/ ; \
       ",
-              Integer, Decimal, Number, Symbol, Expr, Sexpr, Program);
+              Integer, Decimal, Number, Symbol, Expr, Sexpr, Quote, Program);
 }
 
 void cleanup_parser(void) {
     /* Undefine and Delete our Parsers */
-    mpc_cleanup(4, Integer, Decimal, Number, Symbol, Expr, Sexpr, Program);
+    mpc_cleanup(4, Integer, Decimal, Number, Symbol, Expr, Sexpr, Quote,
+                Program);
 }
 
 OP parseSym(char* op) {
@@ -54,5 +58,6 @@ SYMBOL parseTag(char* tag) {
     if (strstr(tag, "decimal")) { return TAG_DEC; }
     if (strstr(tag, "symbol")) { return TAG_SYM; }
     if (strstr(tag, "sexpr")) { return TAG_SEXPR; }
+    if (strstr(tag, "quote")) { return TAG_QUOTE; }
     assert(0 && "unreachable code reached in parseTag()");
 }
