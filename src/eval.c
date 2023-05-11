@@ -144,7 +144,10 @@ Result* eval(mpc_ast_t* node) {
 
             sexpr->result.list.cell = malloc(sizeof(Result*));
 
-            for (size i = 1; i < (size)node->children_num - 1; i++) {
+            // We loop from 1 to children_num - 1 since the first and last
+            // elements of an s-expression are the '(' and ')' characters which
+            // we can ignore
+            for (int i = 1; i < node->children_num - 1; i++) {
                 sexpr->result.list.count++;
                 sexpr->result.list.cell =
                     realloc(sexpr->result.list.cell,
