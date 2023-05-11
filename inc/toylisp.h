@@ -14,6 +14,8 @@
 #include <readline/readline.h>
 
 #include "eval.h"
+#include "util.h"
 #include "parser.h"
+#include "types.h"
 
 #endif

@@ -19,9 +19,9 @@ SANFLAGS=-fsanitize=address,undefined,integer-divide-by-zero -fno-omit-frame-poi
 LDLIBS=-lreadline -lm
 
 # Header files
-HEADERS=toylisp types eval parser mpc
+HEADERS=toylisp util types eval parser mpc
 # Compilation units
-UNITS=toylisp types eval parser mpc
+UNITS=toylisp util types eval parser mpc
 
 # Generate lists of headers, sources, objects, and object-with-debugging-symbols
 HDRS=$(patsubst %, $(OBJECT_DIR)/%.h.gch, $(HEADERS))
