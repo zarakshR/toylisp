@@ -2,7 +2,7 @@ MAKEFLAGS += -rR
 
 .EXTRA_PREREQS:= $(abspath $(lastword $(MAKEFILE_LIST)))
 
-PROGRAM_NAME=lithp
+PROGRAM_NAME=toylisp
 P=$(PROGRAM_NAME)
 
 INCLUDE_DIR=inc
@@ -19,9 +19,9 @@ SANFLAGS=-fsanitize=address,undefined,integer-divide-by-zero -fno-omit-frame-poi
 LDLIBS=-lreadline -lm
 
 # Header files
-HEADERS=lithp types eval parser mpc
+HEADERS=toylisp types eval parser mpc
 # Compilation units
-UNITS=lithp types eval parser mpc
+UNITS=toylisp types eval parser mpc
 
 # Generate lists of headers, sources, objects, and object-with-debugging-symbols
 HDRS=$(patsubst %, $(OBJECT_DIR)/%.h.gch, $(HEADERS))
