@@ -5,11 +5,18 @@
 
 #include <utils.h>
 
-typedef enum { TYPE_INT, VAL_DEC, VAL_SYM, VAL_SEXPR, VAL_ERR } VAL_TYPE;
+typedef enum {
+    TYPE_INT,
+    TYPE_DEC,
+    TYPE_SYM,
+    TYPE_SEXPR,
+    TYPE_ERR,
+    TYPE_QUOTE
+} TYPE;
 typedef enum { TAG_INT, TAG_DEC, TAG_SYM, TAG_SEXPR, TAG_QUOTE } SYMBOL;
 
 typedef struct Result {
-    VAL_TYPE type;
+    TYPE type;
     union {
         long int integer;
         long double decimal;
