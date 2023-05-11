@@ -1,23 +1,80 @@
 #include "eval.h"
 
-Result valResult(long x) {
-    Result res = {.type = INT_VALUE, .result.ivalue = x};
+Result* valResult(long x) {
+    Result* res         = malloc(sizeof(Result));
+    res->type           = VAL_INT;
+    res->result.integer = x;
     return res;
 }
 
-Result dubResult(long double x) {
-    Result res = {.type = DEC_VALUE, .result.dvalue = x};
+Result* dubResult(long double x) {
+    Result* res         = malloc(sizeof(Result));
+    res->type           = VAL_DEC;
+    res->result.decimal = x;
     return res;
 }
 
-Result errResult(ERR_CODE err) {
-    Result res = {.type = ERROR, .result.evalue = err};
+Result* symResult(char* sym) {
+    Result* res        = malloc(sizeof(Result));
+    res->type          = VAL_SYM;
+    res->result.symbol = malloc(strlen(sym) + 1);
+    strcpy(res->result.symbol, sym);
     return res;
 }
 
-Result evalOp(char* op, long x, long y) {
-    switch (parseOP(op)) {
-        long res;
+Result* sexprResult() {
+    Result* res            = malloc(sizeof(Result));
+    res->type              = VAL_SEXPR;
+    res->result.list.count = 0;
+    res->result.list.cell  = NULL;
+    return res;
+}
+
+Result* errResult(char* err) {
+    Result* res       = malloc(sizeof(Result));
+    res->type         = VAL_ERR;
+    res->result.error = malloc(strlen(err) + 1);
+    strcpy(res->result.error, err);
+    return res;
+}
+
+// Will recursively free everythin in a sexpr
+void resultFree(Result* res) {
+    switch (res->type) {
+        case VAL_INT: break;
+        case VAL_DEC: break;
+        case VAL_SYM: free(res->result.symbol); break;
+        case VAL_SEXPR:
+            for (size i = 0; i < res->result.list.count; i++) {
+                resultFree(res->result.list.cell[i]);
+            }
+            free(res->result.list.cell);
+            break;
+        case VAL_ERR: free(res->result.error); break;
+        default: break;
+    }
+    free(res);
+}
+
+Result* evalSym(Result* sexpr) {
+
+    if (not(sexpr->result.list.count is 3)) {
+        return errResult("Arity is not 2");
+    }
+
+    Result* sym  = sexpr->result.list.cell[0];
+    Result* arg1 = sexpr->result.list.cell[1];
+    Result* arg2 = sexpr->result.list.cell[2];
+
+    if (not(arg1->type is VAL_INT and arg2->type is VAL_INT)) {
+        return errResult("Symbol error");
+    }
+
+    long x = arg1->result.integer;
+    long y = arg2->result.integer;
+    long res;
+
+    switch (parseSym(sym->result.symbol)) {
         case ADD:;
             if (__builtin_saddl_overflow(x, y, &res)) {
                 return errResult(INT_FLOW);
@@ -49,13 +106,13 @@ Result evalOp(char* op, long x, long y) {
         case MOD: return y == 0 ? errResult(DIV_ZERO) : valResult(x % y);
         case MIN: return valResult(x < y ? x : y);
         case MAX: return valResult(x > y ? x : y);
-        default: assert(0 && "unreachable code reached in evalOp()");
+        default: return errResult("Symbol not found"); break;
     }
 }
 
-Result eval(mpc_ast_t* node) {
+Result* eval(mpc_ast_t* node) {
     switch (parseTag(node->tag)) {
-        case NUM: {
+        case INT: {
             long val = strtol(node->contents, NULL, 0);
             if (errno is ERANGE) { return errResult(INT_FLOW); }
             // We shouldn't need to check for other failures since the
@@ -71,29 +128,38 @@ Result eval(mpc_ast_t* node) {
             return dubResult(val);
         }
 
-        case EXPR:;
+        case SYM: return symResult(node->contents);
 
-            // Only accept 2-arity functions: '(' + op + arg1 + arg2 + ')' is 5
-            if (node->children_num != 5) { return errResult(ARG_COUNT); }
+        case SEXPR:
 
-            // Grammar guarantees first arg is the operation
-            char* op = node->children[1]->contents;
+            // Empty s-expression. The opening and closing brackets each counts
+            // for one child.
+            if (node->children_num == 2) { return sexprResult(); }
 
-            Result res1 = eval(node->children[2]);
-            if (res1.type is ERROR) { return res1; }
+            // Single cell s-expression. The opening and closing brackets each
+            // counts for one child.
+            if (node->children_num == 3) { return eval(node->children[1]); }
 
-            Result res2 = eval(node->children[3]);
-            if (res2.type is ERROR) { return res2; }
+            Result* sexpr = sexprResult();
 
-            // Only evaluate op if both arguments are ints
-            if (res1.type is INT_VALUE and res2.type is INT_VALUE) {
-                return evalOp(op, (long)res1.result.ivalue,
-                              (long)res2.result.ivalue);
+            sexpr->result.list.cell = malloc(sizeof(Result*));
+
+            for (size i = 1; i < (size)node->children_num - 1; i++) {
+                sexpr->result.list.count++;
+                sexpr->result.list.cell =
+                    realloc(sexpr->result.list.cell,
+                            sizeof(Result*) * sexpr->result.list.count);
+                sexpr->result.list.cell[i - 1] = eval(node->children[i]);
             }
 
-            assert(0 && "Uninmplemented handling of decimal arguments");
+            if (sexpr->result.list.cell[0]->type is VAL_SYM) {
+                return evalSym(sexpr);
+            }
+
+            return sexpr;
 
         case ROOT: return eval(node->children[1]);
+
         default: assert(0 && "unreachable code reached in eval()");
     }
     assert(0 && "unreachable code reached in eval()");

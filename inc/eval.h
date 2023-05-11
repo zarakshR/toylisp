@@ -7,19 +7,30 @@
 #include "mpc.h"
 #include "parser.h"
 
-typedef enum { INT_VALUE, DEC_VALUE, ERROR } RES_TYPE;
-typedef enum { DIV_ZERO, ARG_COUNT, INT_FLOW } ERR_CODE;
+typedef enum { VAL_INT, VAL_DEC, VAL_SYM, VAL_SEXPR, VAL_ERR } VAL_TYPE;
 
-typedef struct {
-    RES_TYPE type;
+// Error strings
+#define DIV_ZERO  "Division by zero"
+#define ARG_COUNT "Wrong no. of arguments"
+#define INT_FLOW  "Integer over/underflow"
+
+typedef struct Result {
+    VAL_TYPE type;
     union {
-        long int ivalue;
-        long double dvalue;
-        ERR_CODE evalue;
+        long int integer;
+        long double decimal;
+        char* error;
+        char* symbol;
+        // An s-expression with size information
+        struct {
+            size count;
+            struct Result** cell;
+        } list;
     } result;
 } Result;
 
-Result evalOp(char* op, long, long);
-Result eval(mpc_ast_t*);
+void resultFree(Result*);
+Result* evalSym(Result* sexpr);
+Result* eval(mpc_ast_t*);
 
 #endif

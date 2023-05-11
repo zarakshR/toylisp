@@ -13,22 +13,30 @@ void printAST(mpc_ast_t* node) {
     _printAST(node, 0);
 }
 
-const char* reprError(ERR_CODE err) {
-    switch (err) {
-        case DIV_ZERO: return "Division by zero";
-        case ARG_COUNT: return "Wrong number of arguments";
-        case INT_FLOW: return "Integer over/underflow";
-        default: return "Unknown error";
+void _printResult(Result* r) {
+    switch (r->type) {
+        case VAL_INT: printf("%ld", r->result.integer); break;
+        case VAL_DEC: printf("%Lf", r->result.decimal); break;
+        case VAL_SYM: printf("SYMBOL: %s", r->result.symbol); break;
+        case VAL_SEXPR:
+            printf("(");
+            // Print only upto the *second-last* element so we can avoid adding
+            // a space after the last one. This is just for prettiness.
+            for (size i = 0; i < r->result.list.count - 1; i++) {
+                _printResult(r->result.list.cell[i]);
+                printf(" ");
+            }
+            // Now print the last element with adding a space after it
+            _printResult(r->result.list.cell[r->result.list.count - 1]);
+            printf(")");
+            break;
+        case VAL_ERR: printf("ERROR: %s", r->result.error); break;
+        default: assert(0 && "unreachable code reached in _printResult()");
     }
 }
-
-void printResult(Result r) {
-    switch (r.type) {
-        case INT_VALUE: printf("%ld\n", r.result.ivalue); break;
-        case DEC_VALUE: printf("%Lf\n", r.result.dvalue); break;
-        case ERROR: printf("%s\n", reprError(r.result.evalue)); break;
-        default: assert(0 && "unreachable code reached in printResult()");
-    }
+void printResult(Result* r) {
+    _printResult(r);
+    printf("\n");
 }
 
 int main() {
@@ -42,8 +50,10 @@ int main() {
         add_history(readLine);
 
         if (mpc_parse("<stdin>", readLine, Program, &r)) {
-            Result eval_result = eval(r.output);
+            printAST(r.output);
+            Result* eval_result = eval(r.output);
             printResult(eval_result);
+            resultFree(eval_result);
             mpc_ast_delete(r.output);
         } else {
             mpc_err_print(r.error);
