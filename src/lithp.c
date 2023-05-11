@@ -22,12 +22,14 @@ void _printResult(Result* r) {
             printf("(");
             // Print only upto the *second-last* element so we can avoid adding
             // a space after the last one. This is just for prettiness.
-            for (size i = 0; i < r->result.list.count - 1; i++) {
-                _printResult(r->result.list.cell[i]);
-                printf(" ");
+            if (not(r->result.list.cell is NULL)) {
+                for (size i = 0; i < r->result.list.count - 1; i++) {
+                    _printResult(r->result.list.cell[i]);
+                    printf(" ");
+                }
+                // Now print the last element with adding a space after it
+                _printResult(r->result.list.cell[r->result.list.count - 1]);
             }
-            // Now print the last element with adding a space after it
-            _printResult(r->result.list.cell[r->result.list.count - 1]);
             printf(")");
             break;
         case VAL_ERR: printf("ERROR: %s", r->result.error); break;
