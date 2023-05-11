@@ -57,6 +57,9 @@ void resultFree(Result* res) {
     free(res);
 }
 
-void resultListAppend(Result* list, Result* suffix) {
-    list->result.list.cell = realloc()
+void resultListAppend(Result* list, Result* res) {
+    list->result.list.cell =
+        realloc(list->result.list.cell, list->result.list.count + 1);
+    list->result.list.cell[list->result.list.count] = res;
+    list->result.list.count++;
 }

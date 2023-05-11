@@ -37,4 +37,7 @@ Result* errResult(char*);
 // Destructor
 void resultFree(Result*);
 
+// Utility functions
+void resultListAppend(Result* list, Result* res);
+
 #endif
