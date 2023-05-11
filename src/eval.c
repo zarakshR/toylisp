@@ -7,7 +7,7 @@ Result* valResult(long x) {
     return res;
 }
 
-Result* dubResult(long double x) {
+Result* decResult(long double x) {
     Result* res         = malloc(sizeof(Result));
     res->type           = VAL_DEC;
     res->result.decimal = x;
@@ -94,7 +94,7 @@ Result* evalSym(Result* sexpr) {
                 return valResult(res);
             }
         case DIV:
-            return y == 0 ? errResult(DIV_ZERO) : dubResult(x / (double)y);
+            return y == 0 ? errResult(DIV_ZERO) : decResult(x / (double)y);
         case POW:;
             long acc = 1;
             for (int i = 0; i < y; i++) {
@@ -123,9 +123,9 @@ Result* eval(mpc_ast_t* node) {
         case DEC: {
             long double val = strtold(node->contents, NULL);
             if (errno is ERANGE) { return errResult(INT_FLOW); }
-            // We shouldn't need to check for other failures since the language
-            // grammar ensures valid numbers only.
-            return dubResult(val);
+            // We shouldn't need to check for other failures since the
+            // language grammar ensures valid numbers only.
+            return decResult(val);
         }
 
         case SYM: return symResult(node->contents);
