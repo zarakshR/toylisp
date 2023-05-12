@@ -56,6 +56,7 @@ Result* parseAST(const mpc_ast_t* node) {
             return valResult(val);
         }
 
+            // TODO: Make symbols first-class datatype
         case TAG_SYM: return symResult(node->contents);
 
         case TAG_SEXPR:;
@@ -72,18 +73,17 @@ Result* parseAST(const mpc_ast_t* node) {
 
         case TAG_QUOTE:;
 
-            // A quote has the same internal representation as a sexpr
             Result* quote = quoteResult();
 
             // We want to loop from 1 to children_num-1 since the first and last
-            // children are going to be '`' and '`' respectively
+            // children are going to be '{' and '}' respectively
             for (int i = 1; i < node->children_num - 1; i++) {
                 resultListAppend(quote, parseAST(node->children[i]));
             }
 
             return quote;
 
-        default: PANIC("unreachable code reached in parseAST()");
+        default: PANIC("Attempted to parse unknown tag");
     }
 }
 

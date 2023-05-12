@@ -1,5 +1,6 @@
 #include "types.h"
 
+// Constructors for the different types
 Result* valResult(const long x) {
     Result* res         = malloc(sizeof(Result));
     res->type           = TYPE_INT;
@@ -56,6 +57,7 @@ void resultFree(Result* res) {
     free(res);
 }
 
+// Appends a single Result to a list.
 void resultListAppend(Result* const list, Result* const res) {
     list->result.list.cell =
         realloc(list->result.list.cell,
@@ -101,6 +103,7 @@ void printResult(const Result* const r) {
     printf("\n");
 }
 
+// Lookup table for builtin functions
 OP parseSym(const char* op) {
     if (not strcmp(op, "+")) { return ADD; }
     if (not strcmp(op, "-")) { return SUB; }

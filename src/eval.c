@@ -5,7 +5,6 @@
 // macro definitions
 static Result* evalSym(Result* const sexpr) {
 
-    // Return error if first arg is not a symbol
     ASSERT_TYPE(sexpr, 0, TYPE_SYM);
 
     Result* sym = sexpr->result.list.cell[0];
@@ -134,8 +133,8 @@ Result* eval(Result* expr) {
         case TYPE_ERR: return expr;
         case TYPE_SEXPR:;
 
-            // Just return itself. This is ad-hoc, we should return a nil
-            // element instead
+            // Just return itself. This is ad-hoc, we should return a (yet to be
+            // implemented) nil element instead
             if (SIZE_OF(expr) is 0) { ERR_OUT(expr, "EMPTY APPLICATION"); }
 
             // Evaluate all the children.

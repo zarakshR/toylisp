@@ -13,11 +13,12 @@
 
 #include <utils.h>
 
-// Error strings
+// Common error strings. Maybe remove later?
 #define DIV_ZERO  "DIVISION BY ZERO"
 #define ARG_COUNT "WRONG NO. OF ARGUMENTS"
 #define INT_FLOW  "INTEGER OVER/UNDERFLOW"
 
+// For unrecoverable errors
 #define PANIC(msg) assert(0 && msg)
 
 #endif
