@@ -92,13 +92,9 @@ Result* eval(Result* expr) {
         case TYPE_SEXPR:;
 
             // Evaluate all the children.
+            // TODO: Find a way to shortcircuit on errors
             for (size i = 0; i < expr->result.list.count; i++) {
-                Result* res = eval(expr->result.list.cell[i]);
-                if (res->type is TYPE_ERR) {
-                    resultFree(expr);
-                    return res;
-                }
-                expr->result.list.cell[i] = res;
+                expr->result.list.cell[i] = eval(expr->result.list.cell[i]);
             }
 
             // Evaluate ourselves;
