@@ -10,8 +10,7 @@ Result* valResult(const long x) {
 Result* symResult(const char* const sym) {
     Result* res        = malloc(sizeof(Result));
     res->type          = TYPE_SYM;
-    res->result.symbol = malloc(strlen(sym) + 1);
-    strcpy(res->result.symbol, sym);
+    res->result.symbol = strdup(sym);
     return res;
 }
 
@@ -34,8 +33,7 @@ Result* quoteResult() {
 Result* errResult(const char* const err) {
     Result* res       = malloc(sizeof(Result));
     res->type         = TYPE_ERR;
-    res->result.error = malloc(strlen(err) + 1);
-    strcpy(res->result.error, err);
+    res->result.error = strdup(err);
     return res;
 }
 
