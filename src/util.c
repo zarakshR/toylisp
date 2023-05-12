@@ -32,7 +32,7 @@ void _printResult(Result* r) {
             }
             printf(")");
             break;
-        case TYPE_ERR: printf("ERROR: %s", r->result.error); break;
+        case TYPE_ERR: printf("<%s>", r->result.error); break;
         default:
             printf("Trying to print Result of unknown type: %d\n", r->type);
             break;

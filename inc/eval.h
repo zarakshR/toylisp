@@ -9,9 +9,9 @@
 #include "types.h"
 
 // Error strings
-#define DIV_ZERO  "Division by zero"
-#define ARG_COUNT "Wrong no. of arguments"
-#define INT_FLOW  "Integer over/underflow"
+#define DIV_ZERO  "DIVISION BY ZERO"
+#define ARG_COUNT "WRONG NO. OF ARGUMENTS"
+#define INT_FLOW  "INTEGER OVER/UNDERFLOW"
 
 Result* evalSym(Result* sexpr);
 Result* eval(Result*);

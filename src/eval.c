@@ -5,7 +5,7 @@ Result* evalSym(Result* sexpr) {
 
     if (not(sexpr->result.list.count is 3)) {
         resultFree(sexpr);
-        return errResult("Arity is not 2");
+        return errResult("ARITY IS NOT 2");
     }
 
     Result* sym  = sexpr->result.list.cell[0];
@@ -15,7 +15,7 @@ Result* evalSym(Result* sexpr) {
     // Currently only accepts if both args are ints
     if (not(arg1->type is TYPE_INT and arg2->type is TYPE_INT)) {
         resultFree(sexpr);
-        return errResult("Symbol error");
+        return errResult("NON-INT ARGUMENTS NOT SUPPORTED");
     }
 
     long x = arg1->result.integer;
@@ -25,7 +25,7 @@ Result* evalSym(Result* sexpr) {
     // Return error if first arg is not a symbol
     if (not(sym->type is TYPE_SYM)) {
         resultFree(sexpr);
-        return errResult("Symbol error");
+        return errResult("ATTEMPTING EVALUATION OF NON-SYMBOL");
     }
 
     switch (parseSym(sym->result.symbol)) {
@@ -79,7 +79,7 @@ Result* evalSym(Result* sexpr) {
             return valResult(x % y);
         case MIN: resultFree(sexpr); return valResult(x < y ? x : y);
         case MAX: resultFree(sexpr); return valResult(x > y ? x : y);
-        default: resultFree(sexpr); return errResult("Symbol not found");
+        default: resultFree(sexpr); return errResult("SYMBOL NOT FOUND");
     }
 }
 
