@@ -13,6 +13,7 @@ Result* evalSym(Result* sexpr) {
     Result* arg1 = sexpr->result.list.cell[1];
     Result* arg2 = sexpr->result.list.cell[2];
 
+    // Currently only accepts if both args are ints
     if (not(arg1->type is TYPE_INT and arg2->type is TYPE_INT)) {
         resultFree(sexpr);
         return errResult("Symbol error");
@@ -21,6 +22,12 @@ Result* evalSym(Result* sexpr) {
     long x = arg1->result.integer;
     long y = arg2->result.integer;
     long res;
+
+    // Return error if first arg is not a symbol
+    if (not(sym->type is TYPE_SYM)) {
+        resultFree(sexpr);
+        return errResult("Symbol error");
+    }
 
     switch (parseSym(sym->result.symbol)) {
         case ADD:;
