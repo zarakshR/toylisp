@@ -21,7 +21,7 @@ LDLIBS=-lreadline -lm
 # Header files
 HEADERS=toylisp util types eval parser mpc
 # Compilation units
-UNITS=toylisp util types eval parser mpc
+UNITS=toylisp types eval parser mpc
 
 # Generate lists of headers, sources, objects, and object-with-debugging-symbols
 HDRS=$(patsubst %, $(OBJECT_DIR)/%.h.gch, $(HEADERS))

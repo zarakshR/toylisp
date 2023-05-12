@@ -1,15 +1,23 @@
-#ifndef LITHP__UTIL_H
-#define LITHP__UTIL_H
+#ifndef TOYLISP_UTIL_H
+#define TOYLISP_UTIL_H
 
-#include <stdio.h>
 #include <assert.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
 
-#include "mpc.h"
-#include "types.h"
+#include <readline/history.h>
+#include <readline/readline.h>
+
+#include <utils.h>
+
+// Error strings
+#define DIV_ZERO  "DIVISION BY ZERO"
+#define ARG_COUNT "WRONG NO. OF ARGUMENTS"
+#define INT_FLOW  "INTEGER OVER/UNDERFLOW"
 
 #define PANIC(msg) assert(0 && msg)
-
-void printAST(const mpc_ast_t* const);
-void printResult(const Result* const);
 
 #endif

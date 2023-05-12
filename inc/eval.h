@@ -1,18 +1,9 @@
-#ifndef LITHP__EVAL_H
-#define LITHP__EVAL_H
+#ifndef TOYLISP__EVAL_H
+#define TOYLISP__EVAL_H
 
-#include <utils.h>
-#include <assert.h>
-
-#include "mpc.h"
-#include "parser.h"
 #include "types.h"
-#include "util.h"
 
-// Error strings
-#define DIV_ZERO  "DIVISION BY ZERO"
-#define ARG_COUNT "WRONG NO. OF ARGUMENTS"
-#define INT_FLOW  "INTEGER OVER/UNDERFLOW"
+#include "util.h"
 
 // Free expression and return error
 #define ERR_OUT(tofree, err_message)                                           \
@@ -37,6 +28,5 @@
     }
 
 Result* eval(Result*);
-Result* parseAST(const mpc_ast_t*);
 
 #endif

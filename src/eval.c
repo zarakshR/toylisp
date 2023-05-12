@@ -81,48 +81,6 @@ Result* eval(Result* expr) {
             return evalSym(expr);
 
         case TYPE_QUOTE: return expr;
-        default: PANIC("unreachable code reached in eval()");
+        default: PANIC("Attempted to evaluate value of unknown type");
     }
-}
-
-Result* parseAST(const mpc_ast_t* node) {
-    switch (parseTag(node->tag)) {
-        case TAG_INT: {
-            long val = strtol(node->contents, NULL, 0);
-            if (errno is ERANGE) { return errResult(INT_FLOW); }
-            // We shouldn't need to check for other failures since the
-            // language grammar ensures valid numbers only.
-            return valResult(val);
-        }
-
-        case TAG_SYM: return symResult(node->contents);
-
-        case TAG_SEXPR:;
-
-            Result* sexpr = sexprResult();
-
-            // We want to loop from 1 to children_num-1 since the first and last
-            // children are going to be '(' and ')' respectively
-            for (int i = 1; i < node->children_num - 1; i++) {
-                resultListAppend(sexpr, parseAST(node->children[i]));
-            }
-
-            return sexpr;
-
-        case TAG_QUOTE:;
-
-            // A quote has the same internal representation as a sexpr
-            Result* quote = quoteResult();
-
-            // We want to loop from 1 to children_num-1 since the first and last
-            // children are going to be '`' and '`' respectively
-            for (int i = 1; i < node->children_num - 1; i++) {
-                resultListAppend(quote, parseAST(node->children[i]));
-            }
-
-            return quote;
-
-        default: PANIC("unreachable code reached in parseAST()");
-    }
-    PANIC("unreachable code reached in parseAST()");
 }

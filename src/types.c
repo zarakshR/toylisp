@@ -65,3 +65,52 @@ void resultListAppend(Result* const list, Result* const res) {
     list->result.list.cell[list->result.list.count] = res;
     list->result.list.count++;
 }
+
+static void _printResult(const Result* const r) {
+    switch (r->type) {
+        case TYPE_INT: printf("%ld", r->result.integer); break;
+        case TYPE_SYM: printf("%s", r->result.symbol); break;
+        case TYPE_SEXPR:
+            printf("(");
+            if (r->result.list.count > 0) {
+                for (size i = 0; i < r->result.list.count - 1; i++) {
+                    _printResult(r->result.list.cell[i]);
+                    printf(" ");
+                }
+                _printResult(r->result.list.cell[r->result.list.count - 1]);
+            }
+            printf(")");
+            break;
+        case TYPE_QUOTE:
+            printf("{");
+            if (r->result.list.count > 0) {
+                for (size i = 0; i < r->result.list.count - 1; i++) {
+                    _printResult(r->result.list.cell[i]);
+                    printf(" ");
+                }
+                _printResult(r->result.list.cell[r->result.list.count - 1]);
+            }
+            printf("}");
+            break;
+        case TYPE_ERR: printf("<%s>", r->result.error); break;
+        default:
+            printf("Trying to print Result of unknown type: %d\n", r->type);
+            break;
+    }
+}
+void printResult(const Result* const r) {
+    _printResult(r);
+    printf("\n");
+}
+
+OP parseSym(const char* op) {
+    if (not strcmp(op, "+")) { return ADD; }
+    if (not strcmp(op, "-")) { return SUB; }
+    if (not strcmp(op, "*")) { return MUL; }
+    if (not strcmp(op, "/")) { return DIV; }
+    if (not strcmp(op, "^")) { return POW; }
+    if (not strcmp(op, "%")) { return MOD; }
+    if (not strcmp(op, "min")) { return MIN; }
+    if (not strcmp(op, "max")) { return MAX; }
+    PANIC("unreachable code reached in parseOp()");
+}
