@@ -36,4 +36,10 @@ void resultListAppend(Result* const list, Result* const res);
 void printResult(const Result* const);
 OP parseSym(const char*);
 
+// Get the n'th element of sexpr. Has type Result*
+#define ELEM_AT(SEXPRESSION, INDEX) SEXPRESSION->result.list.cell[INDEX]
+
+// Get the number of elements in sexpr. Has type size
+#define SIZE_OF(SEXPRESSION) SEXPRESSION->result.list.count
+
 #endif

@@ -6,32 +6,32 @@
 #include "util.h"
 
 // Free expression and return error
-#define ERR_OUT(tofree, err_message)                                           \
+#define ERR_OUT(EXPRESSION_TO_FREE, ERROR_MESSAGE)                             \
     {                                                                          \
-        resultFree(tofree);                                                    \
-        return errResult(err_message);                                         \
+        resultFree(EXPRESSION_TO_FREE);                                        \
+        return errResult(ERROR_MESSAGE);                                       \
     }
 
 // Free expression and return value
-#define VAL_OUT(tofree, value)                                                 \
+#define VAL_OUT(EXPRESSION_TO_FREE, VALUE_TO_INSTANTIATE)                      \
     {                                                                          \
-        resultFree(tofree);                                                    \
-        return valResult(value);                                               \
+        resultFree(EXPRESSION_TO_FREE);                                        \
+        return valResult(VALUE_TO_INSTANTIATE);                                \
     }
 
 // Return arity mismatch error if arity is not what we expected
-#define ASSERT_ARITY(expr, arity)                                              \
+#define ASSERT_ARITY(EXPRESSION, ARITY_EXPECTED)                               \
     {                                                                          \
-        if (expr->result.list.count isnot arity + 1) {                         \
-            ERR_OUT(expr, "ARITY MISMATCH");                                   \
+        if (SIZE_OF(EXPRESSION) isnot ARITY_EXPECTED + 1) {                    \
+            ERR_OUT(EXPRESSION, "ARITY MISMATCH");                             \
         }                                                                      \
     }
 
 // Checks if the n'th argument is of type T. Expects a TYPE enum
-#define ASSERT_TYPE(expr, n, T)                                                \
+#define ASSERT_TYPE(EXPRESSION, INDEX, TYPE_EXPECTED)                          \
     {                                                                          \
-        if (expr->result.list.cell[n]->type isnot T) {                         \
-            ERR_OUT(expr, "TYPE ERROR")                                        \
+        if (ELEM_AT(EXPRESSION, INDEX)->type isnot TYPE_EXPECTED) {            \
+            ERR_OUT(EXPRESSION, "TYPE ERROR")                                  \
         }                                                                      \
     }
 

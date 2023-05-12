@@ -135,10 +135,9 @@ Result* eval(Result* expr) {
         case TYPE_SEXPR:;
 
             // Evaluate all the children.
-            for (size i = 0; i < expr->result.list.count; i++) {
-                expr->result.list.cell[i] = eval(expr->result.list.cell[i]);
-                if (expr->result.list.cell[i]->type is TYPE_ERR) {
-                    return expr;
+            for (size i = 0; i < SIZE_OF(expr); i++) {
+                ELEM_AT(expr, i) = eval(ELEM_AT(expr, i));
+            }
                 }
             }
 
