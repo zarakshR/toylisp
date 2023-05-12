@@ -49,6 +49,7 @@ void resultFree(Result* res) {
                 resultFree(res->result.list.cell[i]);
             }
             free(res->result.list.cell);
+            res->result.list.count = 0;
             break;
         case TYPE_ERR: free(res->result.error); break;
         default: break;
