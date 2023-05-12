@@ -53,7 +53,7 @@ void resultFree(Result* res) {
             res->result.list.count = 0;
             break;
         case TYPE_ERR: free(res->result.error); break;
-        default: assert(0 && "Attempted free of unknown type");
+        default: PANIC("Attempted free of unknown type");
     }
     free(res);
 }

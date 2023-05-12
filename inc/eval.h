@@ -7,6 +7,7 @@
 #include "mpc.h"
 #include "parser.h"
 #include "types.h"
+#include "util.h"
 
 // Error strings
 #define DIV_ZERO  "DIVISION BY ZERO"

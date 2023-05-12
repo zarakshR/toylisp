@@ -81,7 +81,7 @@ Result* eval(Result* expr) {
             return evalSym(expr);
 
         case TYPE_QUOTE: return expr;
-        default: assert(0 && "unreachable code reached in eval()");
+        default: PANIC("unreachable code reached in eval()");
     }
 }
 
@@ -122,7 +122,7 @@ Result* parseAST(const mpc_ast_t* node) {
 
             return quote;
 
-        default: assert(0 && "unreachable code reached in parseAST()");
+        default: PANIC("unreachable code reached in parseAST()");
     }
-    assert(0 && "unreachable code reached in parseAST()");
+    PANIC("unreachable code reached in parseAST()");
 }

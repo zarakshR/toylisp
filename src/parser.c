@@ -45,7 +45,7 @@ OP parseSym(const char* op) {
     if (not strcmp(op, "%")) { return MOD; }
     if (not strcmp(op, "min")) { return MIN; }
     if (not strcmp(op, "max")) { return MAX; }
-    assert(0 && "unreachable code reached in parseOp()");
+    PANIC("unreachable code reached in parseOp()");
 }
 
 SYMBOL parseTag(const char* tag) {
@@ -53,5 +53,5 @@ SYMBOL parseTag(const char* tag) {
     if (strstr(tag, "symbol")) { return TAG_SYM; }
     if (strstr(tag, "sexpr")) { return TAG_SEXPR; }
     if (strstr(tag, "quote")) { return TAG_QUOTE; }
-    assert(0 && "unreachable code reached in parseTag()");
+    PANIC("unreachable code reached in parseTag()");
 }
