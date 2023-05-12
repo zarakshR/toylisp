@@ -30,6 +30,14 @@ Result* sexprResult() {
     return res;
 }
 
+Result* quoteResult() {
+    Result* res            = malloc(sizeof(Result));
+    res->type              = TYPE_QUOTE;
+    res->result.list.count = 0;
+    res->result.list.cell  = NULL;
+    return res;
+}
+
 Result* errResult(char* err) {
     Result* res       = malloc(sizeof(Result));
     res->type         = TYPE_ERR;
@@ -45,6 +53,7 @@ void resultFree(Result* res) {
         case TYPE_DEC: break;
         case TYPE_SYM: free(res->result.symbol); break;
         case TYPE_SEXPR:
+        case TYPE_QUOTE:
             for (size i = 0; i < res->result.list.count; i++) {
                 resultFree(res->result.list.cell[i]);
             }

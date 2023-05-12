@@ -140,7 +140,7 @@ Result* parseAST(mpc_ast_t* node) {
         case TAG_QUOTE:;
 
             // A quote has the same internal representation as a sexpr
-            Result* quote = sexprResult();
+            Result* quote = quoteResult();
 
             // We want to loop from 1 to children_num-1 since the first and last
             // children are going to be '`' and '`' respectively

@@ -32,6 +32,17 @@ void _printResult(Result* r) {
             }
             printf(")");
             break;
+        case TYPE_QUOTE:
+            printf("{");
+            if (r->result.list.count > 0) {
+                for (size i = 0; i < r->result.list.count - 1; i++) {
+                    _printResult(r->result.list.cell[i]);
+                    printf(" ");
+                }
+                _printResult(r->result.list.cell[r->result.list.count - 1]);
+            }
+            printf("}");
+            break;
         case TYPE_ERR: printf("<%s>", r->result.error); break;
         default:
             printf("Trying to print Result of unknown type: %d\n", r->type);

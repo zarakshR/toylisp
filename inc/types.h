@@ -44,6 +44,8 @@ Result* sexprResult();
 
 Result* errResult(char*);
 
+Result* quoteResult();
+
 // Destructor
 void resultFree(Result*);
 
