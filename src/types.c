@@ -1,5 +1,4 @@
 #include "types.h"
-#include "eval.h"
 
 Result* valResult(long x) {
     Result* res         = malloc(sizeof(Result));

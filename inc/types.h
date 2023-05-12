@@ -2,6 +2,8 @@
 #define LITHP__TYPES_H
 
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <utils.h>
 
@@ -9,8 +11,8 @@ typedef enum {
     TYPE_INT,
     TYPE_DEC,
     TYPE_SYM,
-    TYPE_SEXPR,
     TYPE_ERR,
+    TYPE_SEXPR,
     TYPE_QUOTE
 } TYPE;
 typedef enum { TAG_INT, TAG_DEC, TAG_SYM, TAG_SEXPR, TAG_QUOTE } SYMBOL;

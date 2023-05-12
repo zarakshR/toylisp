@@ -1,5 +1,4 @@
 #include "eval.h"
-#include "types.h"
 
 // evalSym must free the sexpr it is passed and return an alternate Result*
 Result* evalSym(Result* sexpr) {
@@ -80,10 +79,7 @@ Result* evalSym(Result* sexpr) {
             return valResult(x % y);
         case MIN: resultFree(sexpr); return valResult(x < y ? x : y);
         case MAX: resultFree(sexpr); return valResult(x > y ? x : y);
-        default:
-            resultFree(sexpr);
-            return errResult("Symbol not found");
-            break;
+        default: resultFree(sexpr); return errResult("Symbol not found");
     }
 }
 

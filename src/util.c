@@ -33,7 +33,9 @@ void _printResult(Result* r) {
             printf(")");
             break;
         case TYPE_ERR: printf("ERROR: %s", r->result.error); break;
-        default: assert(0 && "unreachable code reached in _printResult()");
+        default:
+            printf("Trying to print Result of unknown type: %d\n", r->type);
+            break;
     }
 }
 void printResult(Result* r) {
