@@ -134,10 +134,25 @@ Result* eval(Result* expr) {
         case TYPE_ERR: return expr;
         case TYPE_SEXPR:;
 
+            // Just return itself. This is ad-hoc, we should return a nil
+            // element instead
+            if (SIZE_OF(expr) is 0) { ERR_OUT(expr, "EMPTY APPLICATION"); }
+
             // Evaluate all the children.
             for (size i = 0; i < SIZE_OF(expr); i++) {
                 ELEM_AT(expr, i) = eval(ELEM_AT(expr, i));
             }
+
+            // If the result of any of the expressions was an error, then free
+            // the original expression and return the first error expected
+            for (size i = 0; i < SIZE_OF(expr); i++) {
+                if (ELEM_AT(expr, i)->type is TYPE_ERR) {
+                    // Do not use the ERR_OUT macro here since we need to copy
+                    // the string from the original expression before we free
+                    // the result.
+                    Result* res = errResult(ELEM_AT(expr, i)->result.error);
+                    resultFree(expr);
+                    return res;
                 }
             }
 
