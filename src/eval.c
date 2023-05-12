@@ -3,83 +3,62 @@
 // evalSym must free the sexpr it is passed and return an alternate Result*
 static Result* evalSym(Result* const sexpr) {
 
-    if (not(sexpr->result.list.count is 3)) {
-        resultFree(sexpr);
-        return errResult("ARITY IS NOT 2");
+    Result* sym = sexpr->result.list.cell[0];
+
+    // Return error if first arg is not a symbol
+    if (sym->type isnot TYPE_SYM) {
+        ERR_OUT(sexpr, "ATTEMPTED EVALUATION OF NON-SYMBOL");
     }
 
-    Result* sym  = sexpr->result.list.cell[0];
     Result* arg1 = sexpr->result.list.cell[1];
     Result* arg2 = sexpr->result.list.cell[2];
 
-    // Currently only accepts if both args are ints
-    if (not(arg1->type is TYPE_INT and arg2->type is TYPE_INT)) {
-        resultFree(sexpr);
-        return errResult("NON-INT ARGUMENTS NOT SUPPORTED");
-    }
-
-    long x = arg1->result.integer;
-    long y = arg2->result.integer;
-    long res;
-
-    // Return error if first arg is not a symbol
-    if (not(sym->type is TYPE_SYM)) {
-        resultFree(sexpr);
-        return errResult("ATTEMPTING EVALUATION OF NON-SYMBOL");
-    }
+    long x   = arg1->result.integer;
+    long y   = arg2->result.integer;
+    long res = 1;
 
     switch (parseSym(sym->result.symbol)) {
-        case ADD:;
+        case ADD:
+            ASSERT_ARITY(sexpr, 2);
             if (__builtin_saddl_overflow(x, y, &res)) {
-                resultFree(sexpr);
-                return errResult(INT_FLOW);
+                ERR_OUT(sexpr, INT_FLOW);
             } else {
-                resultFree(sexpr);
-                return valResult(res);
+                VAL_OUT(sexpr, res);
             }
         case SUB:
+            ASSERT_ARITY(sexpr, 2);
             if (__builtin_ssubl_overflow(x, y, &res)) {
-                resultFree(sexpr);
-                return errResult(INT_FLOW);
+                ERR_OUT(sexpr, INT_FLOW);
             } else {
-                resultFree(sexpr);
-                return valResult(res);
+                VAL_OUT(sexpr, res);
             }
         case MUL:
+            ASSERT_ARITY(sexpr, 2);
             if (__builtin_smull_overflow(x, y, &res)) {
-                resultFree(sexpr);
-                return errResult(INT_FLOW);
+                ERR_OUT(sexpr, INT_FLOW);
             } else {
-                resultFree(sexpr);
-                return valResult(res);
+                VAL_OUT(sexpr, res);
             }
         case DIV:
-            if (y == 0) {
-                resultFree(sexpr);
-                return errResult(DIV_ZERO);
-            }
-            resultFree(sexpr);
-            return decResult(x / y);
-        case POW:;
-            long acc = 1;
+            ASSERT_ARITY(sexpr, 2);
+            if (y == 0) { ERR_OUT(sexpr, DIV_ZERO); }
+            VAL_OUT(sexpr, (x / y));
+        case POW:
+            ASSERT_ARITY(sexpr, 2);
+            // TODO: Does not handle negative exponents.
             for (int i = 0; i < y; i++) {
-                if (__builtin_smull_overflow(acc, x, &acc)) {
-                    resultFree(sexpr);
-                    return errResult(INT_FLOW);
+                if (__builtin_smull_overflow(res, x, &res)) {
+                    ERR_OUT(sexpr, INT_FLOW);
                 }
             }
-            resultFree(sexpr);
-            return valResult(acc);
+            VAL_OUT(sexpr, res);
         case MOD:
-            if (y == 0) {
-                resultFree(sexpr);
-                return errResult(DIV_ZERO);
-            }
-            resultFree(sexpr);
-            return valResult(x % y);
-        case MIN: resultFree(sexpr); return valResult(x < y ? x : y);
-        case MAX: resultFree(sexpr); return valResult(x > y ? x : y);
-        default: resultFree(sexpr); return errResult("SYMBOL NOT FOUND");
+            ASSERT_ARITY(sexpr, 2);
+            if (y == 0) { ERR_OUT(sexpr, DIV_ZERO); }
+            VAL_OUT(sexpr, (x % y));
+        case MIN: ASSERT_ARITY(sexpr, 2); VAL_OUT(sexpr, (x < y ? x : y));
+        case MAX: ASSERT_ARITY(sexpr, 2); VAL_OUT(sexpr, (x > y ? x : y));
+        default: ERR_OUT(sexpr, "SYMBOL NOT FOUND");
     }
 }
 
