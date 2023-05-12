@@ -22,7 +22,8 @@ void setup_parser(void) {
     mpca_lang(MPCA_LANG_DEFAULT, " \
         integer : /-?[0-9]+/ ; \
         number  : <integer> ; \
-        symbol  : '+' | '-' | '*' | '/' | '%' | '^' | \"min\" | \"max\" ; \
+        symbol  : '+' | '-' | '*' | '/' | '%' | '^' | \"min\" | \"max\" | \
+                 \"list\" | \"car\" | \"cdr\" | \"join\" | \"eval\" ; \
         expr    : <number> | <symbol> | <sexpr> | <quote> ; \
         quote   : '{' <expr>* '}' ; \
         sexpr   : '(' <expr>* ')' ; \
