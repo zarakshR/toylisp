@@ -7,13 +7,6 @@ Result* valResult(const long x) {
     return res;
 }
 
-Result* decResult(const long double x) {
-    Result* res         = malloc(sizeof(Result));
-    res->type           = TYPE_DEC;
-    res->result.decimal = x;
-    return res;
-}
-
 Result* symResult(const char* const sym) {
     Result* res        = malloc(sizeof(Result));
     res->type          = TYPE_SYM;
@@ -50,7 +43,6 @@ Result* errResult(const char* const err) {
 void resultFree(Result* res) {
     switch (res->type) {
         case TYPE_INT: break;
-        case TYPE_DEC: break;
         case TYPE_SYM: free(res->result.symbol); break;
         case TYPE_SEXPR:
         case TYPE_QUOTE:

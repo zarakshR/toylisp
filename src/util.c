@@ -16,7 +16,6 @@ void printAST(const mpc_ast_t* const node) {
 static void _printResult(const Result* const r) {
     switch (r->type) {
         case TYPE_INT: printf("%ld", r->result.integer); break;
-        case TYPE_DEC: printf("%Lf", r->result.decimal); break;
         case TYPE_SYM: printf("%s", r->result.symbol); break;
         case TYPE_SEXPR:
             printf("(");

@@ -8,23 +8,15 @@
 
 #include <utils.h>
 
-typedef enum {
-    TYPE_INT,
-    TYPE_DEC,
-    TYPE_SYM,
-    TYPE_ERR,
-    TYPE_SEXPR,
-    TYPE_QUOTE
-} TYPE;
+typedef enum { TYPE_INT, TYPE_SYM, TYPE_ERR, TYPE_SEXPR, TYPE_QUOTE } TYPE;
 
 typedef enum { ADD, SUB, MUL, DIV, POW, MOD, MIN, MAX } OP;
-typedef enum { TAG_INT, TAG_DEC, TAG_SYM, TAG_SEXPR, TAG_QUOTE } SYMBOL;
+typedef enum { TAG_INT, TAG_SYM, TAG_SEXPR, TAG_QUOTE } SYMBOL;
 
 typedef struct Result {
     TYPE type;
     union {
         long int integer;
-        long double decimal;
         char* error;
         char* symbol;
         // An s-expression with size information
@@ -37,8 +29,6 @@ typedef struct Result {
 
 // Constructors
 Result* valResult(const long);
-
-Result* decResult(const long double);
 
 Result* symResult(const char* const);
 

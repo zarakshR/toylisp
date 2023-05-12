@@ -86,7 +86,6 @@ static Result* evalSym(Result* const sexpr) {
 Result* eval(Result* expr) {
     switch (expr->type) {
         case TYPE_INT: return expr;
-        case TYPE_DEC: return expr;
         case TYPE_SYM: return expr;
         case TYPE_ERR: return expr;
         case TYPE_SEXPR:;
@@ -115,14 +114,6 @@ Result* parseAST(const mpc_ast_t* node) {
             // We shouldn't need to check for other failures since the
             // language grammar ensures valid numbers only.
             return valResult(val);
-        }
-
-        case TAG_DEC: {
-            long double val = strtold(node->contents, NULL);
-            if (errno is ERANGE) { return errResult(INT_FLOW); }
-            // We shouldn't need to check for other failures since the
-            // language grammar ensures valid numbers only.
-            return decResult(val);
         }
 
         case TAG_SYM: return symResult(node->contents);

@@ -1,7 +1,6 @@
 #include "parser.h"
 
 mpc_parser_t* Integer;
-mpc_parser_t* Decimal;
 mpc_parser_t* Number;
 mpc_parser_t* Symbol;
 mpc_parser_t* Expr;
@@ -12,7 +11,6 @@ mpc_parser_t* Program;
 void setup_parser(void) {
     // Initialize Parsers
     Integer = mpc_new("integer");
-    Decimal = mpc_new("decimal");
     Number  = mpc_new("number");
     Symbol  = mpc_new("symbol");
     Expr    = mpc_new("expr");
@@ -23,22 +21,19 @@ void setup_parser(void) {
     /* Define them with the following Language */
     mpca_lang(MPCA_LANG_DEFAULT, " \
         integer : /-?[0-9]+/ ; \
-        decimal : /-?[0-9]*\\.[0-9]+/ ; \
-        number  : <decimal> | <integer> ; \
-        symbol  : '+' | '-' | '*' | '/' | \"_/\" \
-                 | '%' | '^' | \"min\" | \"max\"; \
+        number  : <integer> ; \
+        symbol  : '+' | '-' | '*' | '/' | '%' | '^' | \"min\" | \"max\" ; \
         expr    : <number> | <symbol> | <sexpr> | <quote> ; \
         quote   : '{' <expr>* '}' ; \
         sexpr   : '(' <expr>* ')' ; \
         program : /^/ <expr>* /$/ ; \
       ",
-              Integer, Decimal, Number, Symbol, Expr, Sexpr, Quote, Program);
+              Integer, Number, Symbol, Expr, Sexpr, Quote, Program);
 }
 
 void cleanup_parser(void) {
     /* Undefine and Delete our Parsers */
-    mpc_cleanup(4, Integer, Decimal, Number, Symbol, Expr, Sexpr, Quote,
-                Program);
+    mpc_cleanup(4, Integer, Number, Symbol, Expr, Sexpr, Quote, Program);
 }
 
 OP parseSym(const char* op) {
@@ -55,7 +50,6 @@ OP parseSym(const char* op) {
 
 SYMBOL parseTag(const char* tag) {
     if (strstr(tag, "integer")) { return TAG_INT; }
-    if (strstr(tag, "decimal")) { return TAG_DEC; }
     if (strstr(tag, "symbol")) { return TAG_SYM; }
     if (strstr(tag, "sexpr")) { return TAG_SEXPR; }
     if (strstr(tag, "quote")) { return TAG_QUOTE; }
