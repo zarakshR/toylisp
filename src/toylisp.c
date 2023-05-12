@@ -23,10 +23,9 @@ int main() {
             // characters are mpc's internal representation for start-of-input
             // and end-of-input
             for (int i = 1; i < parser_output->children_num - 1; i++) {
-                Result* program     = parseAST(parser_output->children[i]);
-                Result* eval_result = eval(program);
-                printResult(eval_result);
-                resultFree(eval_result);
+                Result* result = eval(parseAST(parser_output->children[i]));
+                printResult(result);
+                resultFree(result);
             }
             mpc_ast_delete(r.output);
         } else {
