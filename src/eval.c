@@ -123,7 +123,7 @@ static Result* evalSym(Result* const sexpr) {
             VAL_OUT(sexpr, (x > y ? x : y));
         }
 
-        default: ERR_OUT(sexpr, "SYMBOL NOT FOUND");
+        default: PANIC("Attempting to evaluate unknown symbol");
     }
 }
 
