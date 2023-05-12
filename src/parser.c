@@ -41,7 +41,7 @@ void cleanup_parser(void) {
                 Program);
 }
 
-OP parseSym(char* op) {
+OP parseSym(const char* op) {
     if (not strcmp(op, "+")) { return ADD; }
     if (not strcmp(op, "-")) { return SUB; }
     if (not strcmp(op, "*")) { return MUL; }
@@ -53,7 +53,7 @@ OP parseSym(char* op) {
     assert(0 && "unreachable code reached in parseOp()");
 }
 
-SYMBOL parseTag(char* tag) {
+SYMBOL parseTag(const char* tag) {
     if (strstr(tag, "integer")) { return TAG_INT; }
     if (strstr(tag, "decimal")) { return TAG_DEC; }
     if (strstr(tag, "symbol")) { return TAG_SYM; }

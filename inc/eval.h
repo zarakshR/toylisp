@@ -13,8 +13,7 @@
 #define ARG_COUNT "WRONG NO. OF ARGUMENTS"
 #define INT_FLOW  "INTEGER OVER/UNDERFLOW"
 
-Result* evalSym(Result* sexpr);
 Result* eval(Result*);
-Result* parseAST(mpc_ast_t*);
+Result* parseAST(const mpc_ast_t*);
 
 #endif

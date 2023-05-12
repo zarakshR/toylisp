@@ -1,1 +1,0 @@
-Add consts and static wherever possible

@@ -1,7 +1,7 @@
 #include "eval.h"
 
 // evalSym must free the sexpr it is passed and return an alternate Result*
-Result* evalSym(Result* sexpr) {
+static Result* evalSym(Result* const sexpr) {
 
     if (not(sexpr->result.list.count is 3)) {
         resultFree(sexpr);
@@ -107,7 +107,7 @@ Result* eval(Result* expr) {
     }
 }
 
-Result* parseAST(mpc_ast_t* node) {
+Result* parseAST(const mpc_ast_t* node) {
     switch (parseTag(node->tag)) {
         case TAG_INT: {
             long val = strtol(node->contents, NULL, 0);

@@ -7,7 +7,7 @@
 #include "mpc.h"
 #include "types.h"
 
-void printAST(mpc_ast_t*);
-void printResult(Result*);
+void printAST(const mpc_ast_t* const);
+void printResult(const Result* const);
 
 #endif

@@ -16,12 +16,10 @@ extern mpc_parser_t* Sexpr;
 extern mpc_parser_t* Quote;
 extern mpc_parser_t* Program;
 
-typedef enum { ADD, SUB, MUL, DIV, POW, MOD, MIN, MAX } OP;
-
 void cleanup_parser(void);
 void setup_parser(void);
 
-OP parseSym(char*);
-SYMBOL parseTag(char*);
+OP parseSym(const char*);
+SYMBOL parseTag(const char*);
 
 #endif

@@ -16,6 +16,8 @@ typedef enum {
     TYPE_SEXPR,
     TYPE_QUOTE
 } TYPE;
+
+typedef enum { ADD, SUB, MUL, DIV, POW, MOD, MIN, MAX } OP;
 typedef enum { TAG_INT, TAG_DEC, TAG_SYM, TAG_SEXPR, TAG_QUOTE } SYMBOL;
 
 typedef struct Result {
@@ -34,15 +36,15 @@ typedef struct Result {
 } Result;
 
 // Constructors
-Result* valResult(long);
+Result* valResult(const long);
 
-Result* decResult(long double);
+Result* decResult(const long double);
 
-Result* symResult(char*);
+Result* symResult(const char* const);
 
 Result* sexprResult();
 
-Result* errResult(char*);
+Result* errResult(const char* const);
 
 Result* quoteResult();
 
@@ -50,6 +52,6 @@ Result* quoteResult();
 void resultFree(Result*);
 
 // Utility functions
-void resultListAppend(Result* list, Result* res);
+void resultListAppend(Result* const list, Result* const res);
 
 #endif

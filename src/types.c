@@ -1,20 +1,20 @@
 #include "types.h"
 
-Result* valResult(long x) {
+Result* valResult(const long x) {
     Result* res         = malloc(sizeof(Result));
     res->type           = TYPE_INT;
     res->result.integer = x;
     return res;
 }
 
-Result* decResult(long double x) {
+Result* decResult(const long double x) {
     Result* res         = malloc(sizeof(Result));
     res->type           = TYPE_DEC;
     res->result.decimal = x;
     return res;
 }
 
-Result* symResult(char* sym) {
+Result* symResult(const char* const sym) {
     Result* res        = malloc(sizeof(Result));
     res->type          = TYPE_SYM;
     res->result.symbol = malloc(strlen(sym) + 1);
@@ -38,7 +38,7 @@ Result* quoteResult() {
     return res;
 }
 
-Result* errResult(char* err) {
+Result* errResult(const char* const err) {
     Result* res       = malloc(sizeof(Result));
     res->type         = TYPE_ERR;
     res->result.error = malloc(strlen(err) + 1);
@@ -66,7 +66,7 @@ void resultFree(Result* res) {
     free(res);
 }
 
-void resultListAppend(Result* list, Result* res) {
+void resultListAppend(Result* const list, Result* const res) {
     list->result.list.cell =
         realloc(list->result.list.cell,
                 sizeof(Result*) * (list->result.list.count + 1));
