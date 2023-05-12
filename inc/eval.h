@@ -27,6 +27,14 @@
         }                                                                      \
     }
 
+// Checks if the n'th argument is of type T. Expects a TYPE enum
+#define ASSERT_TYPE(expr, n, T)                                                \
+    {                                                                          \
+        if (expr->result.list.cell[n]->type isnot T) {                         \
+            ERR_OUT(expr, "TYPE ERROR")                                        \
+        }                                                                      \
+    }
+
 Result* eval(Result*);
 
 #endif
