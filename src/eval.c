@@ -7,7 +7,7 @@ static Result* evalSym(Result* const sexpr) {
 
     ASSERT_TYPE(sexpr, 0, TYPE_SYM);
 
-    Result* sym = sexpr->result.list.cell[0];
+    Result* sym = ELEM_AT(sexpr, 0);
 
     switch (parseSym(sym->result.symbol)) {
         case ADD: {
@@ -15,8 +15,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x   = sexpr->result.list.cell[1]->result.integer;
-            long y   = sexpr->result.list.cell[2]->result.integer;
+            long x   = ELEM_AT(sexpr, 1)->result.integer;
+            long y   = ELEM_AT(sexpr, 2)->result.integer;
             long res = 1;
 
             if (__builtin_saddl_overflow(x, y, &res)) {
@@ -31,8 +31,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x   = sexpr->result.list.cell[1]->result.integer;
-            long y   = sexpr->result.list.cell[2]->result.integer;
+            long x   = ELEM_AT(sexpr, 1)->result.integer;
+            long y   = ELEM_AT(sexpr, 2)->result.integer;
             long res = 1;
 
             if (__builtin_ssubl_overflow(x, y, &res)) {
@@ -47,8 +47,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x   = sexpr->result.list.cell[1]->result.integer;
-            long y   = sexpr->result.list.cell[2]->result.integer;
+            long x   = ELEM_AT(sexpr, 1)->result.integer;
+            long y   = ELEM_AT(sexpr, 2)->result.integer;
             long res = 1;
 
             if (__builtin_smull_overflow(x, y, &res)) {
@@ -63,8 +63,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x = sexpr->result.list.cell[1]->result.integer;
-            long y = sexpr->result.list.cell[2]->result.integer;
+            long x = ELEM_AT(sexpr, 1)->result.integer;
+            long y = ELEM_AT(sexpr, 2)->result.integer;
 
             if (y == 0) { ERR_OUT(sexpr, DIV_ZERO); }
             VAL_OUT(sexpr, (x / y));
@@ -75,8 +75,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x   = sexpr->result.list.cell[1]->result.integer;
-            long y   = sexpr->result.list.cell[2]->result.integer;
+            long x   = ELEM_AT(sexpr, 1)->result.integer;
+            long y   = ELEM_AT(sexpr, 2)->result.integer;
             long res = 1;
 
             // TODO: Does not handle negative exponents.
@@ -93,8 +93,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x = sexpr->result.list.cell[1]->result.integer;
-            long y = sexpr->result.list.cell[2]->result.integer;
+            long x = ELEM_AT(sexpr, 1)->result.integer;
+            long y = ELEM_AT(sexpr, 2)->result.integer;
 
             if (y == 0) { ERR_OUT(sexpr, DIV_ZERO); }
             VAL_OUT(sexpr, (x % y));
@@ -105,8 +105,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x = sexpr->result.list.cell[1]->result.integer;
-            long y = sexpr->result.list.cell[2]->result.integer;
+            long x = ELEM_AT(sexpr, 1)->result.integer;
+            long y = ELEM_AT(sexpr, 2)->result.integer;
 
             VAL_OUT(sexpr, (x < y ? x : y));
         }
@@ -116,8 +116,8 @@ static Result* evalSym(Result* const sexpr) {
             ASSERT_TYPE(sexpr, 1, TYPE_INT);
             ASSERT_TYPE(sexpr, 2, TYPE_INT);
 
-            long x = sexpr->result.list.cell[1]->result.integer;
-            long y = sexpr->result.list.cell[2]->result.integer;
+            long x = ELEM_AT(sexpr, 1)->result.integer;
+            long y = ELEM_AT(sexpr, 2)->result.integer;
 
             VAL_OUT(sexpr, (x > y ? x : y));
         }

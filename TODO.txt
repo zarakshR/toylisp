@@ -3,3 +3,5 @@ Implement builtins for quotes
 Symbols are stored internally as strings. Change it so that it is a
 first-class datatype; i.e., add a OP operator to the union in struct
 Result and use parseAST to store it as such in the first go.
+
+Add tests

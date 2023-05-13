@@ -16,18 +16,18 @@ Result* symResult(const char* const sym) {
 }
 
 Result* sexprResult() {
-    Result* res            = malloc(sizeof(Result));
-    res->type              = TYPE_SEXPR;
-    res->result.list.count = 0;
-    res->result.list.cell  = NULL;
+    Result* res           = malloc(sizeof(Result));
+    res->type             = TYPE_SEXPR;
+    SIZE_OF(res)          = 0;
+    res->result.list.cell = NULL;
     return res;
 }
 
 Result* quoteResult() {
-    Result* res            = malloc(sizeof(Result));
-    res->type              = TYPE_QUOTE;
-    res->result.list.count = 0;
-    res->result.list.cell  = NULL;
+    Result* res           = malloc(sizeof(Result));
+    res->type             = TYPE_QUOTE;
+    SIZE_OF(res)          = 0;
+    res->result.list.cell = NULL;
     return res;
 }
 
@@ -45,11 +45,11 @@ void resultFree(Result* res) {
         case TYPE_SYM: free(res->result.symbol); break;
         case TYPE_SEXPR:
         case TYPE_QUOTE:
-            for (size i = 0; i < res->result.list.count; i++) {
-                resultFree(res->result.list.cell[i]);
+            for (size i = 0; i < SIZE_OF(res); i++) {
+                resultFree(ELEM_AT(res, i));
             }
             free(res->result.list.cell);
-            res->result.list.count = 0;
+            SIZE_OF(res) = 0;
             break;
         case TYPE_ERR: free(res->result.error); break;
         default: PANIC("Attempted free of unknown type");
@@ -60,10 +60,9 @@ void resultFree(Result* res) {
 // Appends a single Result to a list.
 void resultListAppend(Result* const list, Result* const res) {
     list->result.list.cell =
-        realloc(list->result.list.cell,
-                sizeof(Result*) * (list->result.list.count + 1));
-    list->result.list.cell[list->result.list.count] = res;
-    list->result.list.count++;
+        realloc(list->result.list.cell, sizeof(Result*) * (SIZE_OF(list) + 1));
+    ELEM_AT(list, SIZE_OF(list)) = res;
+    SIZE_OF(list)++;
 }
 
 static void _printResult(const Result* const r) {
@@ -72,23 +71,23 @@ static void _printResult(const Result* const r) {
         case TYPE_SYM: printf("%s", r->result.symbol); break;
         case TYPE_SEXPR:
             printf("(");
-            if (r->result.list.count > 0) {
-                for (size i = 0; i < r->result.list.count - 1; i++) {
-                    _printResult(r->result.list.cell[i]);
+            if (SIZE_OF(r) > 0) {
+                for (size i = 0; i < SIZE_OF(r) - 1; i++) {
+                    _printResult(ELEM_AT(r, i));
                     printf(" ");
                 }
-                _printResult(r->result.list.cell[r->result.list.count - 1]);
+                _printResult(ELEM_AT(r, SIZE_OF(r) - 1));
             }
             printf(")");
             break;
         case TYPE_QUOTE:
             printf("{");
-            if (r->result.list.count > 0) {
-                for (size i = 0; i < r->result.list.count - 1; i++) {
-                    _printResult(r->result.list.cell[i]);
+            if (SIZE_OF(r) > 0) {
+                for (size i = 0; i < SIZE_OF(r) - 1; i++) {
+                    _printResult(ELEM_AT(r, i));
                     printf(" ");
                 }
-                _printResult(r->result.list.cell[r->result.list.count - 1]);
+                _printResult(ELEM_AT(r, SIZE_OF(r) - 1));
             }
             printf("}");
             break;
